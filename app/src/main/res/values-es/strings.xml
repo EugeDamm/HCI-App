@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sistema de Casa Inteligente</string>
+    <string name="title_dashboard">Rutinas</string>
+    <string name="title_home">Habitaciones</string>
+    <string name="title_notifications">Alarma</string>
+</resources>
