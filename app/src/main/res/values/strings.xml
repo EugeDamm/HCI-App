@@ -4,8 +4,24 @@
     <string name="title_dashboard">Routines</string>
     <string name="title_notifications">Alarm</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
     <string name="change_password">Change Password</string>
+
+    <!--Number Pad buttons -->
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="zero">0</string>
+    <string name="delete">Delete</string>
+    <string name="clear">Clear</string>
+
+
 </resources>
