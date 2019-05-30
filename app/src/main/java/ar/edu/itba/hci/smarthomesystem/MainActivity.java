@@ -1,17 +1,11 @@
 package ar.edu.itba.hci.smarthomesystem;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
-
-import java.awt.font.TextAttribute;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -23,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.rooms:
                 break;
             case R.id.routines:
+                fragment = new Routines();
                 break;
             case R.id.alarm:
                 fragment = new Alarm();
