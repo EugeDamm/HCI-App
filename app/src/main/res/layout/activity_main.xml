@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<<<<<<< HEAD
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
@@ -17,47 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <!--view
-            android:id="@+id/recycler_view"
-            class="android.support.v7.widget.RecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" /-->
     </FrameLayout>
-=======
-<<<<<<< HEAD
-    <TextView
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
-=======
-    <!--<TextView-->
-    <!--android:id="@+id/message"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
-    <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
-    <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-    <!--android:text="@string/title_home"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="0dp"
->>>>>>> parent of 1c97c7a... Added rooms fragment
-        android:layout_height="0dp"
-        android:layout_marginTop="254dp"
-        android:text="@string/title_home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-<<<<<<< HEAD
-        app:layout_constraintTop_toTopOf="parent" />
-=======
-        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
->>>>>>> parent of 1c97c7a... Added rooms fragment
->>>>>>> 68a18050c906cf76c7ebfdda66f8f8eb64fe21cd
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/nav_view"
