@@ -15,10 +15,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()) {
             case R.id.rooms:
-                fragment = new ChangeAlarmCode();
                 break;
             case R.id.routines:
-                fragment = new ChangeAlarmCode();
+                fragment = new Routines();
                 break;
             case R.id.alarm:
                 fragment = new Alarm();
