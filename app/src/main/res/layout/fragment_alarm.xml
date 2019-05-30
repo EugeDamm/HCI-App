@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Alarm"
-    android:id="@+id/alarm">
+    android:id="@+id/alarm"
+    tools:locale="es">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
-                android:layout_marginTop="96dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/home_mode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -34,17 +35,18 @@
                 android:layout_marginTop="72dp"
                 android:layout_marginEnd="68dp"
                 android:checked="false"
+                android:theme="@style/SwitchTheme"
                 app:layout_constraintBottom_toBottomOf="@+id/home_mode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/home_mode"
-                app:layout_constraintVertical_bias="0.9" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/out_home_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:layout_marginTop="172dp"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="132dp"
                 android:text="@string/out_home_mode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -56,17 +58,18 @@
                 android:layout_marginTop="72dp"
                 android:layout_marginEnd="68dp"
                 android:checked="false"
+                android:theme="@style/SwitchTheme"
                 app:layout_constraintBottom_toBottomOf="@+id/out_home_mode"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/out_home_mode"
-                app:layout_constraintVertical_bias="0.9" />
+                app:layout_constraintVertical_bias="1.0" />
 
             <Button
                 android:id="@+id/change_password"
                 android:layout_width="241dp"
                 android:layout_height="42dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="248dp"
+                android:layout_marginTop="188dp"
                 android:layout_marginEnd="84dp"
                 android:background="#E09BF5"
                 android:text="@string/change_password"
