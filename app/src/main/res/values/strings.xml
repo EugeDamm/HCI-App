@@ -2,5 +2,13 @@
     <string name="title_home">Rooms</string>
     <string name="title_dashboard">Routines</string>
     <string name="title_notifications">Alarm</string>
+<<<<<<< HEAD
     <string name="app_name">Smart Home System</string>
+=======
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="home_mode">I\'m Home Mode</string>
+    <string name="out_home_mode">Out of Home Mode</string>
+    <string name="change_password">Change Password</string>
+>>>>>>> parent of 1c97c7a... Added rooms fragment
 </resources>
