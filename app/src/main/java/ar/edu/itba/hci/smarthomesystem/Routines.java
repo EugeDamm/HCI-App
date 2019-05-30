@@ -1,16 +1,21 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 
+import android.icu.text.AlphabeticIndex;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +46,17 @@ public class Routines extends Fragment {
         linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout);
 
         final List<Routine> routines = getRoutines();
+        if (routines.size() == 0) {
+            TextView label = new TextView(getActivity());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin = 20;
+            params.leftMargin = 20;
+            params.rightMargin = 20;
+            label.setGravity(Gravity.CENTER);
+            label.setLayoutParams(params);
+            label.setText(R.string.no_routines);
+            linearLayout.addView(label);
+        }
         for (int i = 0; i < routines.size(); i++) {
             final int index = i;
             //Create your Controls(UI widget, Button,TextView) and add into layout
