@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<<<<<<< HEAD
     <string name="app_name">Smart Home System</string>
     <string name="change_password">Cambiar Contraseña</string>
     <string name="home_mode">Modo Estoy en Casa</string>
@@ -25,4 +26,10 @@
         <item>Room 13</item>
         <item>Room 14</item>
     </string-array>
+=======
+    <string name="app_name">Sistema de Casa Inteligente</string>
+    <string name="title_dashboard">Rutinas</string>
+    <string name="title_home">Habitaciones</string>
+    <string name="title_notifications">Alarma</string>
+>>>>>>> 68a18050c906cf76c7ebfdda66f8f8eb64fe21cd
 </resources>

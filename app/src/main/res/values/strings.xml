@@ -1,13 +1,19 @@
 <resources>
-    <string name="app_name">Smart Home System</string>
     <string name="title_home">Rooms</string>
     <string name="title_dashboard">Routines</string>
     <string name="title_notifications">Alarm</string>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    <string name="app_name">Smart Home System</string>
+=======
+>>>>>>> 68a18050c906cf76c7ebfdda66f8f8eb64fe21cd
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
     <string name="change_password">Change Password</string>
+<<<<<<< HEAD
 
     <!-- Tester for list items -->
     <string-array name="fake_rooms">
@@ -26,4 +32,7 @@
         <item>Room 13</item>
         <item>Room 14</item>
     </string-array>
+=======
+>>>>>>> parent of 1c97c7a... Added rooms fragment
+>>>>>>> 68a18050c906cf76c7ebfdda66f8f8eb64fe21cd
 </resources>
