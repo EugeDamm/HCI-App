@@ -4,7 +4,7 @@
     <string name="title_notifications">Alarm</string>
     <string name="app_name">Smart Home System</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
     <string name="change_password">Change Password</string>

@@ -21,6 +21,7 @@ import java.awt.font.TextAttribute;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "MainActivity";
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.rooms:
                 fragment = new Rooms();
             case R.id.routines:
+                fragment = new Routines();
                 break;
             case R.id.alarm:
                 fragment = new Alarm();
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
                     .commit();
             return true;
         }
