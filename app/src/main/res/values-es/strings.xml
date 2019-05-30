@@ -8,6 +8,9 @@
     <string name="title_home">Habitaciones</string>
     <string name="title_notifications">Alarma</string>
 
+    <!-- Routines Mode -->
+    <string name="no_routines">No hay Rutinas disponibles.</string>
+
     <!-- Tester for list items -->
     <string-array name="fake_rooms">
         <item>Room 1</item>

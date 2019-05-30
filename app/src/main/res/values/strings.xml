@@ -4,6 +4,9 @@
     <string name="title_notifications">Alarm</string>
     <string name="app_name">Smart Home System</string>
 
+    <!-- Routine Mode -->
+    <string name="no_routines">No available Routines.</string>
+
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
