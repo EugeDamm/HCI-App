@@ -1,13 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Smart Home System</string>
-    <string name="title_home">Rooms</string>
-    <string name="title_dashboard">Routines</string>
-    <string name="title_notifications">Alarm</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="home_mode">I\'m Home Mode</string>
-    <string name="out_home_mode">Out of Home Mode</string>
-    <string name="change_password">Change Password</string>
+    <string name="change_password">Cambiar Contraseña</string>
+    <string name="home_mode">Modo Estoy en Casa</string>
+    <string name="out_home_mode">Modo Fuera de Casa</string>
+    <string name="title_dashboard">Rutinas</string>
+    <string name="title_home">Habitaciones</string>
+    <string name="title_notifications">Alarma</string>
 
     <!-- Tester for list items -->
     <string-array name="fake_rooms">

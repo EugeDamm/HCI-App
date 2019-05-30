@@ -23,7 +23,11 @@ public class Alarm extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alarm, container , false); // root = null
+        /*View child = container.findViewById(R.id.recycler_view_rooms);
+        System.out.println(child);
+        child.setEnabled(false);
+        System.out.println("isActivated??????" + child.isActivated());*/
+        return inflater.inflate(R.layout.fragment_alarm, container, false); // root = null
     }
 
 }
