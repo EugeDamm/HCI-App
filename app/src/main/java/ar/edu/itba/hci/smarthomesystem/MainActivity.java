@@ -7,14 +7,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+
+    private static final String TAG = "MainActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setOnNavigationItemSelectedListener(this);
+        loadFragment(new Rooms());
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
-
+        Fragment fragment = new Rooms();
         switch (item.getItemId()) {
             case R.id.rooms:
+                fragment = new Rooms();
                 break;
             case R.id.routines:
                 fragment = new Routines();
@@ -23,14 +35,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new Alarm();
         }
         return loadFragment(fragment);
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        navView.setOnNavigationItemSelectedListener(this);
-
     }
 
     private boolean loadFragment(Fragment fragment) {
@@ -44,4 +48,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         return false;
     }
+
 }
