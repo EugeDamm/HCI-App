@@ -29,18 +29,10 @@ import android.widget.Toast;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
-import api.*;
-import api.Error;
 
+import api.Api;
+import devices.Alarm;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     private final String LOG_TAG = "ar.edu.itba.apiexample";
@@ -50,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Bundle bundle = new Bundle();
     public Context context;
     private RoomListViewModel viewModel;
+    boolean ALARM_CREATED = false;
+    private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
+    String alarmId;
+    private ArrayList<Device> mDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +56,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
+        Api.getInstance(this).getRooms(new Response.Listener<ArrayList<Room>>() {
+            @Override
+            public void onResponse(ArrayList<Room> response) {
+                bundle.putParcelableArrayList("rooms", response);
+                fragment = new Rooms();
+                fragment.setArguments(bundle);
+                loadFragment(fragment);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ErrorHandler.handleError(error, MainActivity.this);
+            }
+        });
         if(display.getRotation() == Surface.ROTATION_90) {
             loadDoubleView();
         } else {
@@ -89,12 +99,33 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        handleError(error);
+                        ErrorHandler.handleError(error, MainActivity.this);
                     }
                 });
                 break;
             case R.id.alarm:
-                fragment = new Alarm();
+                Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
+                    @Override
+                    public void onResponse(ArrayList<Device> response) {
+                        for(Device d : response) {
+                            if(d.getTypeId().equals(ALARM_TYPE_ID)) {
+                                AlarmFragment alarmFragment = new AlarmFragment();
+                                Bundle bundle = new Bundle();
+                                Alarm alarm = new Alarm(d.getName(), d.getId(), d.getTypeId());
+                                bundle.putSerializable("alarm", alarm);
+                                alarmFragment.setArguments(bundle);
+                                loadFragment(alarmFragment);
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ErrorHandler.handleError(error, MainActivity.this);
+                    }
+                });
+                fragment = new NoAlarm();
+                break;
         }
         return loadFragment(fragment);
     }
@@ -115,31 +146,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         return false;
     }
-
-    public void handleError(VolleyError error) {
-        Error response = null;
-
-        NetworkResponse networkResponse = error.networkResponse;
-        if ((networkResponse != null) && (error.networkResponse.data != null)) {
-            try {
-                String json = new String(
-                        error.networkResponse.data,
-                        HttpHeaderParser.parseCharset(networkResponse.headers));
-
-                JSONObject jsonObject = new JSONObject(json);
-                json = jsonObject.getJSONObject("error").toString();
-
-                Gson gson = new Gson();
-                response = gson.fromJson(json, Error.class);
-            } catch (JSONException e) {
-            } catch (UnsupportedEncodingException e) {
-            }
-        }
-        Log.e(LOG_TAG, error.toString());
-        String text = getResources().getString(R.string.error_message);
-        if (response != null)
-            text += " " + response.getDescription().get(0);
-        Toast.makeText(MainActivity.this, text, Toast.LENGTH_LONG).show();
-    }
-
 }

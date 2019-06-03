@@ -5,12 +5,13 @@
     <string name="app_name">Smart Home System</string>
 
     <!-- Routine Mode -->
-    <string name="no_routines">No Routines Have Been Added!</string>
+    <string name="no_routines">No available Routines.</string>
 
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
     <string name="change_password">Change Password</string>
+    <string name="save_changes">Save Changes</string>
 
     <!-- Tester for list items -->
     <string name="fake_room">Fake Room</string>
@@ -30,8 +31,29 @@
         <item>Room 13</item>
         <item>Room 14</item>
     </string-array>
+    <string name="title_activity_specific_room2">SpecificRoomActivity2</string>
+
+    <string name="short_code">The code must be of 4 digits</string>
     <string name="error_message">Error</string>
     <string name="no_devices_added">No Devices Added</string>
+    <string name="alarm_code_warning">WARNING: The default code of the alarm is 1234, it is highly recommended that the you set your own alarm code before start activating any mode</string>
+    <string name="enter_old_code">Enter Old Code</string>
+    <string name="enter_new_code">Enter New Code</string>
+    <string name="confirm_code">Confirm Code</string>
+    <string name="empty_field">The field cannot be empty</string>
+    <string name="old_code_wrong">The old code is wrong</string>
+    <string name="codes_dont_match">The codes don\'t match</string>
+    <string name="code_changed">Code changed successfully</string>
+    <string name="home_mode_activated">I\'m Home Mode activated succesfully!</string>
+    <string name="out_home_mode_activated">Out of Home Mode activated successfully</string>
+    <string name="disarm_mode">Mode desactivated successfully</string>
+    <string name="tool">tool</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="alarm_not_created">The alarm it is not added. You can add it from the webpage.</string>
+    <string name="pop_message">Please enter the alarm code</string>
+
+
     <string name="status">Current State</string>
     <string name="level">Current Level</string>
     <string name="lock_status">Current Lock State</string>
