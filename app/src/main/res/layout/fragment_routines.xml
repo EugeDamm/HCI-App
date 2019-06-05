@@ -17,38 +17,3 @@
     </FrameLayout>
 
 </ScrollView>
-
-
-
-<!--
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button
-        android:id="@+id/routine1"
-        android:layout_width="155dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:onClick="routineOnClick"
-        android:text="Routine1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/routine2"
-        android:layout_width="155dp"
-        android:layout_height="84dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="30dp"
-        android:onClick="routineOnClick"
-        android:text="Routine2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</android.support.constraint.ConstraintLayout>
--->
