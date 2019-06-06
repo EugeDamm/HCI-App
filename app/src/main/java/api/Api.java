@@ -1,7 +1,9 @@
 package api;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -14,6 +16,7 @@ import java.util.UUID;
 
 import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
+import ar.edu.itba.hci.smarthomesystem.State;
 
 public class Api {
     private static Api instance;
@@ -21,6 +24,7 @@ public class Api {
     // Use IP 10.0.2.2 instead of 127.0.0.1 when running Android emulator in the
     // same computer that runs the API.
     private final String URL = "http://10.0.2.2:8080/api/";
+    private final String TAG = "Api";
 
     private Api(Context context) {
         this.requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
@@ -101,6 +105,18 @@ public class Api {
         String url = URL + "rooms/" + roomId + "/devices";
         GsonRequest<Object, ArrayList<Device>> request =
                 new GsonRequest<Object, ArrayList<Device>>(Request.Method.GET, url, null, "devices", new TypeToken<ArrayList<Device>>(){}, null, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String getDeviceState(Response.Listener<State> listener, Response.ErrorListener errorListener, String deviceId) {
+        String url = URL + "devices/" + deviceId + "/getState";
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<Object, State> request =
+                new GsonRequest<Object, State>(Request.Method.PUT, url, null, "result", new TypeToken<State>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
