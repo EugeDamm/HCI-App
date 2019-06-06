@@ -29,4 +29,6 @@
         <item>Room 14</item>
     </string-array>
     <string name="fake_room">Cuarto Falso</string>
+    <string name="no_devices_added">No Hay Dispositivos Disponibles</string>
+    <string name="error_message">Error</string>
 </resources>
