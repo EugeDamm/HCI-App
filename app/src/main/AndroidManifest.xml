@@ -25,6 +25,9 @@
             android:name=".SpecificRoomActivity"
             android:parentActivityName=".MainActivity"
             />
+        <activity android:name=".SpecificDeviceActivity"
+            android:parentActivityName=".SpecificRoomActivity"
+            />
     </application>
 
 </manifest>

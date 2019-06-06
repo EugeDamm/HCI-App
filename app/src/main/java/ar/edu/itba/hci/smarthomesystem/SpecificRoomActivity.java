@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -38,11 +39,11 @@ public class SpecificRoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getSupportActionBar();
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+        final Bundle bundle = intent.getExtras();
         setContentView(R.layout.specific_room);
         linearLayout = findViewById(R.id.specificLinearLayout);
         if(bundle != null) {
-            Room room = (Room) bundle.get("room_name");
+            final Room room = (Room) bundle.get("room_name");
             if(actionBar != null)
                 actionBar.setTitle(room.getName());
             Api.getInstance(this).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
@@ -51,6 +52,7 @@ public class SpecificRoomActivity extends AppCompatActivity {
                     list = response;
                     if(list != null && list.size() > 0) {
                         for (int i = 0; i < list.size(); i++) {
+                            final int index = i;
                             Button btn = new Button(context);
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                             params.topMargin = 20;
@@ -58,6 +60,20 @@ public class SpecificRoomActivity extends AppCompatActivity {
                             params.rightMargin = 20;
                             btn.setLayoutParams(params);
                             btn.setText(list.get(i).toString());
+                            btn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(context, SpecificDeviceActivity.class);
+                                    final Device deviceToExpand = list.get(index);
+                                    Bundle bundleToAdd = new Bundle();
+                                    bundleToAdd.putString("device_name", deviceToExpand.getName());
+                                    bundleToAdd.putString("device_id", deviceToExpand.getId());
+                                    bundleToAdd.putString("device_type_id", deviceToExpand.getTypeId());
+                                    bundleToAdd.putParcelable("go_back", room);
+                                    intent.putExtras(bundleToAdd);
+                                    startActivity(intent);
+                                }
+                            });
                             linearLayout.addView(btn);
                         }
                     } else {

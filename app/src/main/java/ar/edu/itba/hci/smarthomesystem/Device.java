@@ -1,10 +1,29 @@
 package ar.edu.itba.hci.smarthomesystem;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import api.Api;
+import api.Error;
 
 public class Device implements Parcelable {
 
+    private final String TAG = "Device";
     private String id;
     private String name;
     private String typeId;
