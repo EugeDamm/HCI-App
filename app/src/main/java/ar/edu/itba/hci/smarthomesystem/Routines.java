@@ -62,8 +62,8 @@ public class Routines extends Fragment {
                 }
             });
             linearLayout.addView(btn);
-            }
         }
+    }
 
     private List<Routine> getRoutines() {
         List<Routine> list = new ArrayList<>();
