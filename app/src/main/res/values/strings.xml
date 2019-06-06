@@ -30,5 +30,8 @@
         <item>Room 13</item>
         <item>Room 14</item>
     </string-array>
-    <string name="title_activity_specific_room2">SpecificRoomActivity2</string>
+    <string name="error_message">Error</string>
+    <string name="no_devices_added">No Devices Added</string>
+
+
 </resources>

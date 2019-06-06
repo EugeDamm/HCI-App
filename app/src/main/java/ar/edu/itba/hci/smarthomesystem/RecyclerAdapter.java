@@ -12,12 +12,12 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>  {
+public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>  {
 
-    private List<String> elements;
+    private List<T> elements;
     private OnItemListener onItemListener;
 
-    public RecyclerAdapter(List<String> elements, OnItemListener onItemListener) {
+    public RecyclerAdapter(List<T> elements, OnItemListener onItemListener) {
         this.elements = elements;
         this.onItemListener = onItemListener;
     }
@@ -32,7 +32,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
-        viewHolder.textView.setText(elements.get(i));
+        viewHolder.textView.setText(elements.get(i).toString());
     }
 
     @Override
