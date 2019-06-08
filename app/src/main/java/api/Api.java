@@ -23,7 +23,8 @@ public class Api {
     private static RequestQueue requestQueue;
     // Use IP 10.0.2.2 instead of 127.0.0.1 when running Android emulator in the
     // same computer that runs the API.
-    private final String URL = "http://10.0.2.2:8080/api/";
+    // Use IP 192.168.0.16 when running Android on a real phone
+    private final String URL = "http://192.168.0.16:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
