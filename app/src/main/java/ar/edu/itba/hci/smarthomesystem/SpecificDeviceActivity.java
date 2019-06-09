@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +67,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 public void onResponse(State response) {
                     response.setDeviceType(deviceTypeId);
                     DeviceType deviceType = response.getCreatedDevice();
-                    createLayoutForDevice(deviceType);
+                    createLayoutForDevice(deviceType, deviceId);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -77,38 +78,39 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         }
     }
 
-    private void createLayoutForDevice(DeviceType device) {
+    private void createLayoutForDevice(DeviceType device, String deviceId) {
         String typeId = device.getTypeId();
         switch (typeId) {
             case BLINDS_TYPE_ID:
-                createBlindsLayout(device);
+                createBlindsLayout(device, deviceId);
                 break;
             case LAMP_TYPE_ID:
-                createLampLayout(device);
+                createLampLayout(device, deviceId);
                 break;
             case DOOR_TYPE_ID:
-                createDoorLayout(device);
+                createDoorLayout(device, deviceId);
                 break;
             case REFRIGERATOR_TYPE_ID:
-                createRefrigeratorLayout(device);
+                createRefrigeratorLayout(device, deviceId);
                 break;
             case AC_TYPE_ID:
-                createAcLayout(device);
+                createAcLayout(device, deviceId);
                 break;
             case TIMER_TYPE_ID:
-                createTimerLayout(device);
+                createTimerLayout(device, deviceId);
                 break;
             case OVEN_TYPE_ID:
-                createOvenLayout(device);
+                createOvenLayout(device, deviceId);
                 break;
         }
     }
 
-    private void createBlindsLayout(DeviceType device) {
+    private void createBlindsLayout(final DeviceType device, final String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.blinds_layout);
         Log.d(TAG, "createBlindsLayout: " + device);
-        TextView statusText = findViewById(R.id.status);
-        String status = device.getStatus();
+        final TextView statusText = findViewById(R.id.status);
+        final String status = device.getStatus();
         statusText.setText(status);
         Switch switchButton = findViewById(R.id.switchBlinds);
         if(status.equals("opened") || status.equals("opening"))
@@ -120,12 +122,28 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         progressBar.setProgress(device.getLevel());
         String progressBarTextConcatenated = device.getLevel() + "%";
         progressBarText.setText(progressBarTextConcatenated);
+        switchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
     }
 
-    private void createDoorLayout(DeviceType device) {
+    private void createDoorLayout(DeviceType device, String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.door_layout);
-        String status = device.getStatus();
-        String lock = device.getLock();
+        final String status = device.getStatus();
+        final String lock = device.getLock();
         TextView statusText = findViewById(R.id.status);
         TextView lockText = findViewById(R.id.lockStatus);
         Switch statusSwitch = findViewById(R.id.switchDoorState);
@@ -140,14 +158,45 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             statusSwitch.setChecked(true);
         else
             statusSwitch.setChecked(false);
+        lockSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
+        statusSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, lock);
+            }
+        });
     }
 
-    private void createLampLayout(DeviceType device) {
+    private void createLampLayout(DeviceType device, String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.lamp_layout);
         String color = "#" + device.getColor();
         TextView statusText = findViewById(R.id.statusText);
-        TextView brightnessValue = findViewById(R.id.brightnessValue);
-        String status = device.getStatus();
+        final TextView brightnessValue = findViewById(R.id.brightnessValue);
+        final String status = device.getStatus();
         statusText.setText(status);
         Switch lampSwitch = findViewById(R.id.lampSwitch);
         if(status.equals("on"))
@@ -156,10 +205,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             lampSwitch.setChecked(false);
         Button colorButton = findViewById(R.id.colorButton);
         colorButton.setBackgroundColor(Color.parseColor(color));
-        ProgressBar brightnessBar = findViewById(R.id.progressBarBrightness);
+        SeekBar brightnessBar = findViewById(R.id.progressBarBrightness);
         final int brightness = device.getBrightness();
         brightnessBar.setProgress(brightness);
-        String brightnessString = brightness + "%";
+        final String brightnessString = brightnessBar.getProgress() + "%";
         brightnessValue.setText(brightnessString);
         /*colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +216,43 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 openColorGradle(color);
             }
         });*/
+        lampSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
+        brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                String toPrint = progress + "%";
+                brightnessValue.setText(toPrint);
+                Api.getInstance(context).setBrightness(new Response.Listener<String[]>() {
+                    @Override
+                    public void onResponse(String[] response) {
+                        Log.d("lampp", "onResponse: " + response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //handleError(error);
+                    }
+                }, deviceIdInner, progress);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
     }
 
     private void openColorGradle(String color) {
@@ -183,9 +269,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         colorGradle.show();
     }
 
-    private void createTimerLayout(DeviceType device) {
+    private void createTimerLayout(DeviceType device, String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.timer_layout);
-        String status = device.getStatus();
+        final String status = device.getStatus();
         int intervalTime = device.getInterval();
         int remainingTime = device.getRemaining();
         int remainingPercentage = (int)(100 * ((double) remainingTime / intervalTime ));
@@ -205,9 +292,24 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             timerSwitch.setChecked(true);
         else
             timerSwitch.setChecked(false);
+        timerSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
     }
 
-    private void createRefrigeratorLayout(DeviceType device) {
+    private void createRefrigeratorLayout(DeviceType device, String deviceId) {
         setContentView(R.layout.refrigerator_layout);
         TextView modeText = findViewById(R.id.modeText);
         TextView freezerTempText = findViewById(R.id.freezerTemperatureText);
@@ -222,7 +324,8 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         temperatureText.setText(temperatureString);
     }
 
-    private void createAcLayout(DeviceType device) {
+    private void createAcLayout(DeviceType device, String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.ac_layout);
         TextView statusText = findViewById(R.id.statusText);
         TextView temperatureText = findViewById(R.id.temperatureText);
@@ -231,7 +334,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         TextView horizontalSwingText = findViewById(R.id.horizontalSwingText);
         TextView fanSpeedText = findViewById(R.id.fanSpeedText);
         Switch acSwitch = findViewById(R.id.acSwitch);
-        String status = device.getStatus();
+        final String status = device.getStatus();
         String mode = device.getMode();
         String verticalSwing = device.getVerticalSwing();
         String horizontalSwing = device.getHorizontalSwing();
@@ -250,10 +353,26 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             acSwitch.setChecked(true);
         else
             acSwitch.setChecked(false);
+        acSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
 
     }
 
-    private void createOvenLayout(DeviceType device) {
+    private void createOvenLayout(DeviceType device, String deviceId) {
+        final String deviceIdInner = deviceId;
         setContentView(R.layout.oven_layout);
         TextView statusText = findViewById(R.id.statusText);
         TextView temperatureText = findViewById(R.id.temperatureText);
@@ -261,7 +380,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         TextView grillText = findViewById(R.id.grillText);
         TextView convectionText = findViewById(R.id.convectionText);
         Switch ovenSwitch = findViewById(R.id.ovenSwitch);
-        String status = device.getStatus();
+        final String status = device.getStatus();
         int temperature = device.getTemperature();
         String heat = device.getHeat();
         String grill = device.getGrill();
@@ -276,9 +395,22 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             ovenSwitch.setChecked(true);
         else
             ovenSwitch.setChecked(false);
+        ovenSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceIdInner, status);
+            }
+        });
     }
-
-
 
     private void handleError(VolleyError error) {
         Error response = null;

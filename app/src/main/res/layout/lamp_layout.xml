@@ -54,17 +54,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progressBarBrightness"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="339dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="205dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Switch
         android:id="@+id/lampSwitch"
         android:layout_width="wrap_content"
@@ -81,6 +70,16 @@
         android:layout_marginStart="176dp"
         android:layout_marginTop="229dp"
         android:text=""
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+        android:id="@+id/progressBarBrightness"
+        android:layout_width="337dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="205dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
