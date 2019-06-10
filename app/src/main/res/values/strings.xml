@@ -4,6 +4,9 @@
     <string name="title_notifications">Alarm</string>
     <string name="app_name">Smart Home System</string>
 
+    <!-- Routine Mode -->
+    <string name="no_routines">No available Routines.</string>
+
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
@@ -29,6 +32,21 @@
     </string-array>
     <string name="error_message">Error</string>
     <string name="no_devices_added">No Devices Added</string>
-
-
+    <string name="status">Current State</string>
+    <string name="level">Current Level</string>
+    <string name="lock_status">Current Lock State</string>
+    <string name="mode">Current Mode</string>
+    <string name="freezer_temperature">Freezer Temperature</string>
+    <string name="temperature">Current Temperature</string>
+    <string name="color">Current Color</string>
+    <string name="see_color">Current Color</string>
+    <string name="brightness">Current Brightness</string>
+    <string name="interval">Current Set Interval</string>
+    <string name="remaining">Remaining Time</string>
+    <string name="heat">Current Heat Mode</string>
+    <string name="grill">Current Grill Mode</string>
+    <string name="convection">Current Convection Mode</string>
+    <string name="vertical_swing">Current Vertical Swing Angle</string>
+    <string name="horizontal_swing">Current Horizontal Swing Angle</string>
+    <string name="fan_speed">Current Fan Speed</string>
 </resources>

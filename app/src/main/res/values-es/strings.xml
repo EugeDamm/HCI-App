@@ -8,6 +8,9 @@
     <string name="title_home">Habitaciones</string>
     <string name="title_notifications">Alarma</string>
 
+    <!-- Routines Mode -->
+    <string name="no_routines">No hay Rutinas disponibles.</string>
+
     <!-- Tester for list items -->
     <string-array name="fake_rooms">
         <item>Room 1</item>
@@ -28,4 +31,22 @@
     <string name="fake_room">Cuarto Falso</string>
     <string name="no_devices_added">No Hay Dispositivos Disponibles</string>
     <string name="error_message">Error</string>
+    <string name="status">Estado Actual</string>
+    <string name="level">Nivel Actual</string>
+    <string name="lock_status">Estado Actual Traba</string>
+    <string name="refrigerator_mode">Modo Actual</string>
+    <string name="freezer_temperature">Temperatura del Freezer</string>
+    <string name="temperature">Temperatura Actual</string>
+    <string name="color">Color Actual</string>
+    <string name="see_color">Ver Color Actual</string>
+    <string name="brightness">Brillo Actual</string>
+    <string name="interval">Intervalo Actual Fijado</string>
+    <string name="remaining">Tiempo Restante</string>
+    <string name="heat">Modo de Calor Actual</string>
+    <string name="grill">Modo de Parilla Actual</string>
+    <string name="convection">Modo de Convección Actual</string>
+    <string name="horizontal_swing">Ángulo de Barrido Horizontal Actual</string>
+    <string name="vertical_swing">Ángulo de Barrido Vertical Actual</string>
+    <string name="mode">Modo Actual</string>
+    <string name="fan_speed">Velocidad Ventilador Actual</string>
 </resources>

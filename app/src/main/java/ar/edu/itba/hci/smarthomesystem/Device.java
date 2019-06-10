@@ -15,13 +15,14 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import api.Api;
 import api.Error;
 
-public class Device implements Parcelable {
+public class Device implements Parcelable, Serializable {
 
     private final String TAG = "Device";
     private String id;
