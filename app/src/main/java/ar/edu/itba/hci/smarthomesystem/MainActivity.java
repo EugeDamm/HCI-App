@@ -77,7 +77,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 loadFragment(fragment);
                 break;
             case R.id.routines:
-                fragment = new Routines();
+                Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+                    @Override
+                    public void onResponse(ArrayList<Routine> response) {
+                        Log.d(TAG, "onResponse: " + "LLEGO" + response);
+                        bundle.putParcelableArrayList("routines", response);
+                        fragment = new Routines();
+                        fragment.setArguments(bundle);
+                        loadFragment(fragment);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                });
                 break;
             case R.id.alarm:
                 fragment = new Alarm();

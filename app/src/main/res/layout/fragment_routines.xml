@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="540dp"
+    android:orientation="vertical"
+    android:layout_marginBottom="56dp"
+    tools:context=".Routines"
+    android:id="@+id/routines">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <view class="android.support.v7.widget.RecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/recycler_view_routines"
+        android:scrollbars="vertical"/>
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" />
-    </FrameLayout>
-
-</ScrollView>
+</FrameLayout>

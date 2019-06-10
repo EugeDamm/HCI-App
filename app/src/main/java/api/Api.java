@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
+import ar.edu.itba.hci.smarthomesystem.Routine;
 import ar.edu.itba.hci.smarthomesystem.State;
 import devices.DeviceType;
 
@@ -26,7 +27,7 @@ public class Api {
     // same computer that runs the API.
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
     // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
-    private final String URL = "http://192.168.0.12:8080/api/";
+    private final String URL = "http://10.0.2.2:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
@@ -316,4 +317,90 @@ public class Api {
     }
 
 
+    public String getRoutines(Response.Listener<ArrayList<Routine>> listener, Response.ErrorListener errorListener) {
+        String url = URL + "routines/";
+        GsonRequest<Object, ArrayList<Routine>> request =
+                new GsonRequest<>(Request.Method.GET, url, null, "routines", new TypeToken<ArrayList<Routine>>(){}, null, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public void makeActions(String deviceId, String actionName, String params) {
+        switch (actionName) {
+            case "turnOn":
+                break;
+
+            case "turnOff":
+                break;
+
+            case "open":
+                break;
+
+            case "close":
+                break;
+
+            case "setTemperature":
+                break;
+
+            case "setColor":
+                break;
+
+            case "setBrightness":
+                break;
+
+            case "setHeat":
+                break;
+
+            case "setGrill":
+                break;
+
+            case "setConvection":
+                break;
+
+            case "setMode":
+                break;
+
+            case "setVerticalSwing":
+                break;
+
+            case "setHorizontalSwing":
+                break;
+
+            case "setFanSpeed":
+                break;
+
+            case "lock":
+                break;
+
+            case "unlock":
+                break;
+
+            case "armStay":
+                break;
+
+            case "armAway":
+                break;
+
+            case "disarm":
+                break;
+
+            case "setInterval":
+                break;
+
+            case "start":
+                break;
+
+            case "stop":
+                break;
+
+            case "setFreezerTemperature":
+                break;
+
+                default:
+                    break;
+
+        }
+    }
 }
