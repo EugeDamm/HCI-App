@@ -17,6 +17,7 @@ import java.util.UUID;
 import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
 import ar.edu.itba.hci.smarthomesystem.State;
+import devices.DeviceType;
 
 public class Api {
     private static Api instance;
@@ -118,6 +119,63 @@ public class Api {
         headers.put("content-type", "application/json");
         GsonRequest<Object, State> request =
                 new GsonRequest<Object, State>(Request.Method.PUT, url, null, "result", new TypeToken<State>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String toggleDevice(Response.Listener<Boolean> listener, Response.ErrorListener errorListener, String deviceId, String status) {
+        String url = URL + "devices/" + deviceId;
+        switch (status) {
+            case "opened":
+                url += "/close";
+                break;
+            case "opening":
+                url += "/close";
+                break;
+            case "closed":
+                url += "/open";
+                break;
+            case "closing":
+                url += "/open";
+                break;
+            case "on":
+                url += "/turnOff";
+                break;
+            case "off":
+                url += "/turnOn";
+                break;
+            case "locked":
+                url += "/unlock";
+                break;
+            case "unlocked":
+                url += "/lock";
+                break;
+            case "active":
+                url += "/stop";
+                break;
+            case "inactive":
+                url +="/start";
+                break;
+        }
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<Boolean, Boolean> request =
+                new GsonRequest<Boolean, Boolean>(Request.Method.PUT, url, null, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String setBrightness(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, int brightness) {
+        String url = URL + "devices/" + deviceId + "/setBrightness";
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        String[] data = {String.valueOf(brightness)};
+        GsonRequest<String[], String[]> request =
+                new GsonRequest<String[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
