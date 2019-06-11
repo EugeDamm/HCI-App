@@ -105,7 +105,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
     };
 
     @Override
-    public void onItemClick(int position, Context context) {
+    public void onItemClick(int position, Context context, View view) {
         Intent intent = new Intent(context, SpecificRoomActivity.class);
         intent.putExtra("room_name", list.get(position));
         startActivity(intent);

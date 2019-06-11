@@ -12,7 +12,6 @@ import java.util.List;
 
 public class RoutinesRecyclerAdapter<T> extends RecyclerAdapter<T> {
 
-    static final int ROUTINES_BOX = 0;
 
     private List<T> elements;
     private OnItemListener onItemListener;
@@ -27,7 +26,6 @@ public class RoutinesRecyclerAdapter<T> extends RecyclerAdapter<T> {
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         TextView textView = (TextView) LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.routine_text_layout, viewGroup, false);
-        textView.setId(ROUTINES_BOX);
         MyViewHolder myViewHolder = new MyViewHolder(textView, onItemListener);
         return myViewHolder;
     }

@@ -1,6 +1,7 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -138,6 +139,6 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyV
     }
 
     public interface OnItemListener {
-        void onItemClick(int position, Context context);
+        void onItemClick(int position, Context context, View view);
     }
 }

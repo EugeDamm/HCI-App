@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
-    private void handleError(VolleyError error) {
+    public void handleError(VolleyError error) {
         Error response = null;
 
         NetworkResponse networkResponse = error.networkResponse;
