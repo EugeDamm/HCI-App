@@ -49,4 +49,15 @@
     <string name="vertical_swing">Current Vertical Swing Angle</string>
     <string name="horizontal_swing">Current Horizontal Swing Angle</string>
     <string name="fan_speed">Current Fan Speed</string>
+    <string name="change_mode">Change Mode</string>
+    <string name="change_temperature">Change Temperature</string>
+    <string name="change_ftemperature">Change Freezer Temperature</string>
+    <string name="edit">Edit</string>
+    <string name="change_fan_speed">Change Fan Speed</string>
+    <string name="change_freezer_temperature">Change Freezer Temperature</string>
+    <string name="change_horizontal_swing">Change Horizontal Swing</string>
+    <string name="change_vertical_swing">Change Vertical Swing</string>
+    <string name="change_grill">Change Grill Option</string>
+    <string name="change_heat">Change Heat</string>
+    <string name="change_convection">Change Convection</string>
 </resources>

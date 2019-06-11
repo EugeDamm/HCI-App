@@ -1,16 +1,21 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -193,7 +198,13 @@ public class SpecificDeviceActivity extends AppCompatActivity {
     private void createLampLayout(DeviceType device, String deviceId) {
         final String deviceIdInner = deviceId;
         setContentView(R.layout.lamp_layout);
-        String color = "#" + device.getColor();
+        final String color;
+        if(device.getColor().startsWith("#"))
+            color = device.getColor();
+        else
+            color = "#" + device.getColor();
+        Log.d(TAG, "createLampLayout: COLOR " + color);
+        final String colorAux = color;
         TextView statusText = findViewById(R.id.statusText);
         final TextView brightnessValue = findViewById(R.id.brightnessValue);
         final String status = device.getStatus();
@@ -203,19 +214,19 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             lampSwitch.setChecked(true);
         else
             lampSwitch.setChecked(false);
-        Button colorButton = findViewById(R.id.colorButton);
+        final Button colorButton = findViewById(R.id.colorButton);
         colorButton.setBackgroundColor(Color.parseColor(color));
         SeekBar brightnessBar = findViewById(R.id.progressBarBrightness);
         final int brightness = device.getBrightness();
         brightnessBar.setProgress(brightness);
         final String brightnessString = brightnessBar.getProgress() + "%";
         brightnessValue.setText(brightnessString);
-        /*colorButton.setOnClickListener(new View.OnClickListener() {
+        colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openColorGradle(color);
+                openColorGradle(colorAux, deviceIdInner);
             }
-        });*/
+        });
         lampSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,12 +250,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).setBrightness(new Response.Listener<String[]>() {
                     @Override
                     public void onResponse(String[] response) {
-                        Log.d("lampp", "onResponse: " + response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //handleError(error);
+                        handleError(error);
                     }
                 }, deviceIdInner, progress);
             }
@@ -255,15 +265,26 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         });
     }
 
-    private void openColorGradle(String color) {
+    private void openColorGradle(String color, final String deviceId) {
         final int hexaColor = Color.parseColor(color);
         AmbilWarnaDialog colorGradle = new AmbilWarnaDialog(this, hexaColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
             public void onCancel(AmbilWarnaDialog dialog) { }
 
             @Override
-            public void onOk(AmbilWarnaDialog dialog, int color) {
+            public void onOk(AmbilWarnaDialog dialog, final int color) {
+                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                Api.getInstance(context).setColor(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                },deviceId, hexColor);
             }
         });
         colorGradle.show();
@@ -310,22 +331,136 @@ public class SpecificDeviceActivity extends AppCompatActivity {
     }
 
     private void createRefrigeratorLayout(DeviceType device, String deviceId) {
+        final String innerDeviceId = deviceId;
         setContentView(R.layout.refrigerator_layout);
-        TextView modeText = findViewById(R.id.modeText);
-        TextView freezerTempText = findViewById(R.id.freezerTemperatureText);
-        TextView temperatureText = findViewById(R.id.temperatureText);
+        final TextView modeText = findViewById(R.id.modeText);
+        final TextView freezerTempText = findViewById(R.id.freezerTemperatureText);
+        final TextView temperatureText = findViewById(R.id.temperatureText);
+        Button modeButton = findViewById(R.id.modeButton);
+        Button temperatureButton = findViewById(R.id.temperatureButton);
+        Button ftemperatureButton = findViewById(R.id.fTempetaureButton);
+        final String[] modes = {"default","vacation","party"};
         String mode = device.getMode();
         int freezerTemp = device.getFreezerTemperature();
         int temperature = device.getTemperature();
-        String freezerTempString = freezerTemp + "°C";
-        String temperatureString = temperature + "°C";
+        final String freezerTempString = freezerTemp + "°C";
+        final String temperatureString = temperature + "°C";
         modeText.setText(mode);
         freezerTempText.setText(freezerTempString);
         temperatureText.setText(temperatureString);
+        modeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_mode)
+                        .setItems(modes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final int index = which;
+                                Log.d(TAG, "onClick: " + modes[which]);
+                                Api.getInstance(context).setMode(new Response.Listener<String[]>() {
+                                    @Override
+                                    public void onResponse(String[] response) {
+                                        modeText.setText(modes[index]);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        handleError(error);
+                                    }
+                                },innerDeviceId, modes[which]);
+                            }
+                        });
+                builder.create();
+                builder.show();
+            }
+        });
+        temperatureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMaxValue(8);
+                numberPicker.setMinValue(2);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_temperature);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setTemperature(new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                String newString = numberPicker.getValue() + "º";
+                                temperatureText.setText(newString);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, innerDeviceId, numberPicker.getValue());
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+        ftemperatureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                String[] negativeValues = new String[13];
+                int first = -20;
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(12);
+                for(int i = 0 ; i < negativeValues.length ; i++) {
+                    negativeValues[i] = String.valueOf(first);
+                    Log.d(TAG, "onClick: " + negativeValues[i]);
+                    first++;
+                }
+                final String[] negVals = negativeValues;
+                numberPicker.setDisplayedValues(negativeValues);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_ftemperature);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setFreezerTemperature(new Response.Listener<String[]>() {
+                            @Override
+                            public void onResponse(String[] response) {
+                                String newString = Integer.valueOf(negVals[numberPicker.getValue()]) + "º";
+                                freezerTempText.setText(newString);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, innerDeviceId, Integer.valueOf(negVals[numberPicker.getValue()]));
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+
     }
 
-    private void createAcLayout(DeviceType device, String deviceId) {
+    private void createAcLayout(DeviceType device, final String deviceId) {
         final String deviceIdInner = deviceId;
+        final String[] modes = {"cool", "heat", "fan"};
         setContentView(R.layout.ac_layout);
         TextView statusText = findViewById(R.id.statusText);
         TextView temperatureText = findViewById(R.id.temperatureText);
@@ -334,6 +469,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         TextView horizontalSwingText = findViewById(R.id.horizontalSwingText);
         TextView fanSpeedText = findViewById(R.id.fanSpeedText);
         Switch acSwitch = findViewById(R.id.acSwitch);
+        Button temperatureButton = findViewById(R.id.temperatureButton);
+        Button vSwingButton = findViewById(R.id.verticalSwingButton);
+        Button hSwingButton = findViewById(R.id.horizontalSwingButton);
+        Button fanSpeedButton = findViewById(R.id.fanSpeedButton);
+        Button modeButton = findViewById(R.id.modeButton);
         final String status = device.getStatus();
         String mode = device.getMode();
         String verticalSwing = device.getVerticalSwing();
@@ -368,7 +508,165 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 }, deviceIdInner, status);
             }
         });
-
+        modeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_mode)
+                        .setItems(modes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final int index = which;
+                                Log.d(TAG, "onClick: " + modes[which]);
+                                Api.getInstance(context).setMode(new Response.Listener<String[]>() {
+                                    @Override
+                                    public void onResponse(String[] response) {
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        handleError(error);
+                                    }
+                                },deviceIdInner, modes[which]);
+                            }
+                        });
+                builder.create();
+                builder.show();
+            }
+        });
+        temperatureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMaxValue(38);
+                numberPicker.setMinValue(18);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_temperature);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: " + dialog);
+                        Api.getInstance(context).setTemperature(new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) { }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, deviceIdInner, numberPicker.getValue());
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+        vSwingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(4);
+                final String[] swings = {"auto", "22", "45", "67", "90"};
+                numberPicker.setDisplayedValues(swings);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_vertical_swing);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setVerticalSwing(new Response.Listener<String[]>() {
+                                @Override
+                                public void onResponse(String[] response) {
+                                }
+                            }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, deviceIdInner, swings[numberPicker.getValue()]);
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+        hSwingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(5);
+                final String[] swings = {"auto", "-90", "-45", "0", "45", "90"};
+                numberPicker.setDisplayedValues(swings);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_horizontal_swing);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setHorizontalSwing(new Response.Listener<String[]>() {
+                            @Override
+                            public void onResponse(String[] response) {
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, deviceIdInner, swings[numberPicker.getValue()]);
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+        fanSpeedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(4);
+                final String[] speeds = {"auto", "25", "50", "75", "100"};
+                numberPicker.setDisplayedValues(speeds);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_fan_speed);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setFanSpeed(new Response.Listener<String[]>() {
+                            @Override
+                            public void onResponse(String[] response) {
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, deviceIdInner, speeds[numberPicker.getValue()]);
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
     }
 
     private void createOvenLayout(DeviceType device, String deviceId) {
@@ -380,12 +678,19 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         TextView grillText = findViewById(R.id.grillText);
         TextView convectionText = findViewById(R.id.convectionText);
         Switch ovenSwitch = findViewById(R.id.ovenSwitch);
+        ImageButton temperatureButton = findViewById(R.id.temperatureButton);
+        ImageButton heatButton = findViewById(R.id.heatButton);
+        ImageButton grillButton = findViewById(R.id.grillButton);
+        ImageButton convectionButton = findViewById(R.id.convectionButton);
         final String status = device.getStatus();
         int temperature = device.getTemperature();
         String heat = device.getHeat();
         String grill = device.getGrill();
         String convection = device.getConvection();
         String temperatureString = temperature + "°C";
+        final String[] grills = {"large", "eco", "off"};
+        final String[] heats = {"conventional", "bottom", "top"};
+        final String[] convections = {"normal", "eco", "off"};
         statusText.setText(status);
         temperatureText.setText(temperatureString);
         heatText.setText(heat);
@@ -401,6 +706,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -408,6 +714,129 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                         handleError(error);
                     }
                 }, deviceIdInner, status);
+            }
+        });
+        temperatureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final NumberPicker numberPicker = new NumberPicker(SpecificDeviceActivity.this);
+                numberPicker.setMinValue(0);
+                numberPicker.setMaxValue(14);
+                final String[] temps = new String[15];
+                int min = 90;
+                for(int i = 0 ; i < temps.length ; i++) {
+                    temps[i] = String.valueOf(min);
+                    min += 10;
+                }
+                final String[] tempAux = temps;
+                numberPicker.setDisplayedValues(tempAux);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_temperature);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setTemperature(new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                TextView textToChange = findViewById(R.id.temperatureText);
+                                String stringToPrint = Integer.valueOf(tempAux[numberPicker.getValue()]) + "ºC";
+                                textToChange.setText(stringToPrint);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                handleError(error);
+                            }
+                        }, deviceIdInner, Integer.valueOf(tempAux[numberPicker.getValue()]));
+                    }
+                });
+                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        });
+        grillButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_mode)
+                        .setItems(grills, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final int index = which;
+                                Api.getInstance(context).setGrill(new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        TextView textToChange = findViewById(R.id.grillText);
+                                        textToChange.setText(grills[index]);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        handleError(error);
+                                    }
+                                },deviceIdInner, grills[which]);
+                            }
+                        });
+                builder.create();
+                builder.show();
+            }
+        });
+        heatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_mode)
+                        .setItems(heats, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final int index = which;
+                                Api.getInstance(context).setHeat(new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        TextView textToChange = findViewById(R.id.heatText);
+                                        textToChange.setText(heats[index]);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        handleError(error);
+                                    }
+                                },deviceIdInner, heats[which]);
+                            }
+                        });
+                builder.create();
+                builder.show();
+            }
+        });
+        convectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SpecificDeviceActivity.this);
+                builder.setTitle(R.string.change_mode)
+                        .setItems(convections, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final int index = which;
+                                Api.getInstance(context).setConvection(new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        TextView textToChange = findViewById(R.id.convectionText);
+                                        textToChange.setText(convections[index]);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        handleError(error);
+                                    }
+                                },deviceIdInner, convections[which]);
+                            }
+                        });
+                builder.create();
+                builder.show();
             }
         });
     }

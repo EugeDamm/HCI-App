@@ -113,4 +113,53 @@
         android:layout_marginEnd="17dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/convectionButton"
+        android:contentDescription="@string/change_temperature"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="344dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/grillButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="260dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/change_heat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/heatButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/change_grill"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/temperatureButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="17dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/change_convection"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
 </android.support.constraint.ConstraintLayout>

@@ -49,4 +49,15 @@
     <string name="vertical_swing">Ángulo de Barrido Vertical Actual</string>
     <string name="mode">Modo Actual</string>
     <string name="fan_speed">Velocidad Ventilador Actual</string>
+    <string name="change_mode">Cambiar Modo</string>
+    <string name="change_ftemperature">Cambiar Temperatura del Freezer</string>
+    <string name="change_temperature">Cambiar Temperatura</string>
+    <string name="edit">Editar</string>
+    <string name="change_fan_speed">Cambiar Velocidad Ventilador</string>
+    <string name="change_freezer_temperature">Cambiar Temperatura Freezer</string>
+    <string name="change_horizontal_swing">Cambiar Barrido Horizontal</string>
+    <string name="change_vertical_swing">Cambiar Barrido Vertical</string>
+    <string name="change_grill">Cambiar Opción de Parrilla</string>
+    <string name="change_heat">Cambiar Calor</string>
+    <string name="change_convection">Cambiar Convección</string>
 </resources>

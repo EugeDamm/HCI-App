@@ -1,5 +1,7 @@
 package api;
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -61,7 +63,7 @@ public class GsonRequest<T1, T2> extends Request<T2>{
 
             if (token != null) {
                 JSONObject jsonObject = new JSONObject(json);
-
+                Log.d("GSON", "parseNetworkResponse: " + typeToken.getType());
                 if (typeToken.getType() == Boolean.class) {
                     json = (new Boolean(jsonObject.getBoolean(token))).toString();
                 } else if (typeToken.getType() == Integer.class) {
@@ -70,6 +72,8 @@ public class GsonRequest<T1, T2> extends Request<T2>{
                     json = (new Double(jsonObject.getDouble(token))).toString();
                 } else if (typeToken.getType() == Long.class) {
                     json = (new Long(jsonObject.getLong(token))).toString();
+                } else if (typeToken.getType() == String.class) {
+                    json = (new String(jsonObject.getString(token)));
                 } else if (Collection.class.isAssignableFrom(typeToken.getRawType())) {
                     json = jsonObject.getJSONArray(token).toString();
                 } else {
