@@ -118,7 +118,7 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
     };
 
     @Override
-    public void onItemClick(int position, Context context) {
+    public void onItemClick(int position, Context context, View view) {
         Intent intent = new Intent(context, SpecificDeviceActivity.class);
         final Device deviceToExpand = list.get(position);
         Bundle bundleToAdd = new Bundle();

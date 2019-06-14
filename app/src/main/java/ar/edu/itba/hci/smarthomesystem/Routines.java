@@ -52,6 +52,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
     RecyclerView.LayoutManager layoutManager;
     List<Routine> list;
     RoutinesRecyclerAdapter<Routine> adapter;
+    private TextView no_routines;
     static final int ROUTINES_BOX = 0;
     private final Handler handler = new Handler();
 
@@ -66,45 +67,61 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         list = getArguments().getParcelableArrayList("routines");
         View view = inflater.inflate(R.layout.fragment_routines, container, false);
         recyclerView = view.findViewById(R.id.recycler_view_routines);
+        no_routines = view.findViewById(R.id.empty_routines_list);
+        if (list == null || list.isEmpty()) {
+            no_routines.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            no_routines.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
         layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RoutinesRecyclerAdapter<>(list, this);
+        adapter = new RoutinesRecyclerAdapter<>( this, "routine");
+        adapter.setElements(list);
         recyclerView.setHasFixedSize(true); // improves performance
         recyclerView.setAdapter(adapter);
-        // getResponceAfterInterval.run();
+        getResponceAfterInterval.run();
         return view;
     }
 
-//    private Runnable getResponceAfterInterval = new Runnable() {
-//        public void run() {
-//            handler.postDelayed(this, 10*1000);
-//            Api.getInstance(getContext()).getRoutines(new Response.Listener<ArrayList<Routine>>() {
-//                @Override
-//                public void onResponse(ArrayList<Routine> response) {
-//                    Log.d("CHEQUEOOOO", "Entro al chequeo");
-//                    if (!list.toString().equals(response.toString())) {
-//                        list = response;
-//                        adapter = new RoutinesRecyclerAdapter<>(list, new Routines());
-//                        recyclerView.setAdapter(adapter);
-//                        // Aca tendria que mandar una notificacion => Hubo un cambio en las rutinas! Toca aquí para conocer tus rutinas.
-//                    }
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    handleError(error);
-//                }
-//            });
-//        }
-//    };
+    private Runnable getResponceAfterInterval = new Runnable() {
+        public void run() {
+            handler.postDelayed(this, 30*1000);
+            Api.getInstance(getContext()).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+                @Override
+                public void onResponse(ArrayList<Routine> response) {
+                    if (!list.toString().equals(response.toString())) {
+                        list = response;
+                        adapter.setElements(list);
+                        recyclerView.setAdapter(adapter);
+                        if (list == null || list.isEmpty()) {
+                            no_routines.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }
+                        else {
+                            no_routines.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                        // Aca tendria que mandar una notificacion => Hubo un cambio en las rutinas! Toca aquí para conocer tus rutinas.
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    handleError(error);
+                }
+            });
+        }
+    };
 
 
     @Override
     public void onItemClick(final int position, Context context, final View view) {
         String name = list.get(position).getName();
-        Toast.makeText(getContext(), name + " On", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), name + " Routine On", Toast.LENGTH_LONG).show();
         makeActions(list.get(position));
-        Log.d("CONTEXT", context.toString());
         ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.rgb(217, 221, 226));
         colorFade.setDuration(4000);
         colorFade.start();
@@ -123,8 +140,6 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
 
     private void makeActions(Routine routine) {
         // TODO: Tendria que hacer las acciones de la rutina aca.
-        Log.d("MAKEACTION", routine.id);
-        Log.d("ACTION", routine.actions[0].toString());
         try {
             JSONObject action = new JSONObject(routine.actions[0].toString());
             String name = action.getString("actionName");
@@ -133,12 +148,9 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
             Api.getInstance(this.getContext()).makeActions(deviceId, name, params);
         }
         catch (JSONException e) {
-            Log.d("JSONError", e.toString());
+            Log.e("JSONError", e.toString());
         }
     }
-
-
-
 
     public void handleError(VolleyError error) {
         Error response = null;

@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void loadDoubleView() {
         getSupportFragmentManager().beginTransaction().replace(R.id.rooms_left, new Rooms()).addToBackStack(null).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.specific_room, new Rooms()).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.specific_room_right, new Rooms()).addToBackStack(null).commit();
     }
 
     private boolean loadFragment(Fragment fragment) {

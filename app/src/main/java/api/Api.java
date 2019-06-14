@@ -420,9 +420,9 @@ public class Api {
                 break;
 
             case "setBrightness":
-                setBrightness(new Response.Listener<String[]>() {
+                setBrightness(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
@@ -476,9 +476,9 @@ public class Api {
                 break;
 
             case "setMode":
-                setMode(new Response.Listener<String[]>() {
+                setMode(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
@@ -490,9 +490,9 @@ public class Api {
                 break;
 
             case "setVerticalSwing":
-                setVerticalSwing(new Response.Listener<String[]>() {
+                setVerticalSwing(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
@@ -504,9 +504,9 @@ public class Api {
                 break;
 
             case "setHorizontalSwing":
-                setHorizontalSwing(new Response.Listener<String[]>() {
+                setHorizontalSwing(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
@@ -518,9 +518,9 @@ public class Api {
                 break;
 
             case "setFanSpeed":
-                setFanSpeed(new Response.Listener<String[]>() {
+                setFanSpeed(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
@@ -604,9 +604,9 @@ public class Api {
                 break;
 
             case "setFreezerTemperature":
-                setFreezerTemperature(new Response.Listener<String[]>() {
+                setFreezerTemperature(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
 
                     }
                 }, new Response.ErrorListener() {
