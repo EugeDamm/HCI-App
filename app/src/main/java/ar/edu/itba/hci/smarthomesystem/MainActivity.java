@@ -1,13 +1,28 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
+import android.view.Surface;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,51 +45,36 @@ import api.Error;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     private final String LOG_TAG = "ar.edu.itba.apiexample";
     private static final String TAG = "MainActivity";
-    private ArrayList<Room> rooms;
+    private MutableLiveData<ArrayList<Room>> rooms;
     private Fragment fragment = null;
     private Bundle bundle = new Bundle();
+    public Context context;
+    private RoomListViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowManager windowManager = getWindowManager();
+        Display display = windowManager.getDefaultDisplay();
+        context = getApplicationContext();
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
-        Api.getInstance(this).getRooms(new Response.Listener<ArrayList<Room>>() {
-            @Override
-            public void onResponse(ArrayList<Room> response) {
-                bundle.putParcelableArrayList("rooms", response);
-                fragment = new Rooms();
-                fragment.setArguments(bundle);
-                loadFragment(fragment);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                handleError(error);
-            }
-        });
+        if(display.getRotation() == Surface.ROTATION_90) {
+            loadDoubleView();
+        } else {
+            fragment = new Rooms();
+            loadFragment(fragment);
+        }
+
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.rooms:
-                Api.getInstance(this).getRooms(new Response.Listener<ArrayList<Room>>() {
-                    @Override
-                    public void onResponse(ArrayList<Room> response) {
-                        bundle.putParcelableArrayList("rooms", response);
-                        Log.d(TAG, "onResponse: " + response);
-                        fragment = new Rooms();
-                        fragment.setArguments(bundle);
-                        loadFragment(fragment);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        handleError(error);
-                    }
-                });
+                fragment = new Rooms();
+                loadFragment(fragment);
                 break;
             case R.id.routines:
                 fragment = new Routines();
@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new Alarm();
         }
         return loadFragment(fragment);
+    }
+
+    private void loadDoubleView() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.rooms_left, new Rooms()).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.specific_room, new Rooms()).addToBackStack(null).commit();
     }
 
     private boolean loadFragment(Fragment fragment) {

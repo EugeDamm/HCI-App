@@ -1,14 +1,21 @@
 package ar.edu.itba.hci.smarthomesystem;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -27,12 +34,20 @@ import java.util.List;
 import api.*;
 import api.Error;
 
-public class SpecificRoomActivity extends AppCompatActivity {
+public class SpecificRoomActivity extends AppCompatActivity implements RecyclerAdapter.OnItemListener {
 
     private static final String TAG = "SpecificRoomActivity";
-    List<Device> list;
-    Context context = this;
-    LinearLayout linearLayout;
+    private List<Device> list;
+    private Context context = this;
+    private LinearLayout linearLayout;
+    private TextView emptyText;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerAdapter<Device> adapter;
+    private DevicesViewModel viewModel;
+    private Room room;
+    private final Handler handler = new Handler();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,53 +55,57 @@ public class SpecificRoomActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
-        setContentView(R.layout.specific_room);
-        linearLayout = findViewById(R.id.specificLinearLayout);
-        if(bundle != null) {
-            final Room room = (Room) bundle.get("room_name");
-            if(actionBar != null)
-                actionBar.setTitle(room.getName());
-            Api.getInstance(this).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
+        room = (Room) bundle.get("room_name");
+        if(room != null && actionBar != null)
+            actionBar.setTitle(room.getName());
+        setContentView(R.layout.fragment_room_devices);
+        emptyText = findViewById(R.id.empty_device_list);
+        recyclerView = findViewById(R.id.recycler_view_devices);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new RecyclerAdapter<>(this, "device");
+        viewModel = ViewModelProviders.of(this).get(DevicesViewModel.class);
+        if(room != null)
+            viewModel.setRoomId(room.getId());
+        final Observer<ArrayList<Device>> deviceObserver = new Observer<ArrayList<Device>>() {
+            @Override
+            public void onChanged(final ArrayList<Device> rooms) {
+                adapter.setElements(rooms);
+                list = rooms;
+                if(list == null || list.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                    emptyText.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    emptyText.setVisibility(View.GONE);
+                }
+            }
+        };
+        if(viewModel != null)
+            viewModel.getDevices().observe(this, deviceObserver);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        getResponseAfterInterval.run();
+    }
+
+    private Runnable getResponseAfterInterval = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(this, 30 * 1000);
+            Api.getInstance(getApplicationContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                 @Override
                 public void onResponse(ArrayList<Device> response) {
-                    list = response;
-                    if(list != null && list.size() > 0) {
-                        for (int i = 0; i < list.size(); i++) {
-                            final int index = i;
-                            Button btn = new Button(context);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params.topMargin = 20;
-                            params.leftMargin = 20;
-                            params.rightMargin = 20;
-                            btn.setLayoutParams(params);
-                            btn.setText(list.get(i).toString());
-                            btn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(context, SpecificDeviceActivity.class);
-                                    final Device deviceToExpand = list.get(index);
-                                    Bundle bundleToAdd = new Bundle();
-                                    bundleToAdd.putString("device_name", deviceToExpand.getName());
-                                    bundleToAdd.putString("device_id", deviceToExpand.getId());
-                                    bundleToAdd.putString("device_type_id", deviceToExpand.getTypeId());
-                                    bundleToAdd.putParcelable("go_back", room);
-                                    intent.putExtras(bundleToAdd);
-                                    startActivity(intent);
-                                }
-                            });
-                            linearLayout.addView(btn);
+                    if(!list.toString().equals(response.toString())) {
+                        adapter.setElements(response);
+                        list = response;
+                        recyclerView.setAdapter(adapter);
+                        if(list == null || list.isEmpty()) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyText.setVisibility(View.VISIBLE);
+                        } else {
+                            recyclerView.setVisibility(View.VISIBLE);
+                            emptyText.setVisibility(View.GONE);
                         }
-                    } else {
-                        //TODO no quiero un boton pero no me estaba saliendo con texto je
-                        Log.d(TAG, "onResponse: el cuarto esta vacio");
-                        Button btn = new Button(context);
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.topMargin = 20;
-                        params.leftMargin = 20;
-                        params.rightMargin = 20;
-                        btn.setLayoutParams(params);
-                        btn.setText(R.string.no_devices_added);
-                        linearLayout.addView(btn);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -94,8 +113,21 @@ public class SpecificRoomActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     handleError(error);
                 }
-            }, room.getId());
+            }, viewModel.getRoomId());
         }
+    };
+
+    @Override
+    public void onItemClick(int position, Context context) {
+        Intent intent = new Intent(context, SpecificDeviceActivity.class);
+        final Device deviceToExpand = list.get(position);
+        Bundle bundleToAdd = new Bundle();
+        bundleToAdd.putString("device_name", deviceToExpand.getName());
+        bundleToAdd.putString("device_id", deviceToExpand.getId());
+        bundleToAdd.putString("device_type_id", deviceToExpand.getTypeId());
+        bundleToAdd.putParcelable("go_back", room);
+        intent.putExtras(bundleToAdd);
+        startActivity(intent);
     }
 
     private void handleError(VolleyError error) {
@@ -123,4 +155,6 @@ public class SpecificRoomActivity extends AppCompatActivity {
             text += " " + response.getDescription().get(0);
         Toast.makeText(SpecificRoomActivity.this, text, Toast.LENGTH_LONG).show();
     }
+
+
 }

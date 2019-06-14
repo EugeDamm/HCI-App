@@ -3,6 +3,8 @@ package ar.edu.itba.hci.smarthomesystem;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 public class Room implements Parcelable {
     private String id;
     private String name;
@@ -18,8 +20,6 @@ public class Room implements Parcelable {
         this.name = name;
         this.meta = meta;
     }
-
-
 
     public void setId(String id) {
         this.id = id;
