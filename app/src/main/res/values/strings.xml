@@ -60,4 +60,5 @@
     <string name="change_grill">Change Grill Option</string>
     <string name="change_heat">Change Heat</string>
     <string name="change_convection">Change Convection</string>
+    <string name="no_rooms">No Rooms Have Been Added!</string>
 </resources>

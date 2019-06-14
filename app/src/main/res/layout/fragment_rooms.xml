@@ -6,12 +6,23 @@
     android:orientation="vertical"
     android:layout_marginBottom="56dp"
     tools:context=".Rooms"
-    android:id="@+id/rooms">
+    android:id="@+id/rooms"
+    >
 
         <view class="android.support.v7.widget.RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recycler_view_rooms"
             android:scrollbars="vertical"/>
+
+        <TextView
+            android:id="@+id/empty_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_rooms"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="45sp"
+            />
 
 </FrameLayout>

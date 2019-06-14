@@ -65,36 +65,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/modeButton"
-        android:layout_width="93dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="206dp"
-        android:layout_marginTop="13dp"
-        android:text="@string/change_mode"
-        android:textSize="8sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/temperatureButton"
-        android:layout_width="93dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="206dp"
-        android:layout_marginTop="162dp"
-        android:text="@string/change_temperature"
-        android:textSize="8sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/fTempetaureButton"
-        android:layout_width="93dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="206dp"
+    <ImageButton
+        android:id="@+id/fTemperatureButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="338dp"
         android:layout_marginTop="87dp"
-        android:text="@string/change_ftemperature"
-        android:textSize="8sp"
+        android:background="@null"
+        android:contentDescription="@string/change_ftemperature"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/temperatureButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="338dp"
+        android:layout_marginTop="162dp"
+        android:background="@null"
+        android:contentDescription="@string/change_temperature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <ImageButton
+        android:id="@+id/modeButton"
+        android:layout_width="39dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="338dp"
+        android:layout_marginTop="16dp"
+        android:background="@null"
+        android:contentDescription="@string/change_mode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
 </android.support.constraint.ConstraintLayout>

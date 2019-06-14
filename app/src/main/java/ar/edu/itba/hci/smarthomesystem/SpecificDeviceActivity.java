@@ -117,7 +117,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         final TextView statusText = findViewById(R.id.status);
         final String status = device.getStatus();
         statusText.setText(status);
-        Switch switchButton = findViewById(R.id.switchBlinds);
+        final Switch switchButton = findViewById(R.id.switchBlinds);
         if(status.equals("opened") || status.equals("opening"))
             switchButton.setChecked(true);
         else
@@ -133,13 +133,20 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(statusText.getText().equals("opened")) {
+                            statusText.setText("closing");
+                            switchButton.setChecked(false);
+                        } else {
+                            statusText.setText("opening");
+                            switchButton.setChecked(true);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, status);
+                }, deviceIdInner, statusText.getText().toString());
             }
         });
     }
@@ -149,10 +156,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         setContentView(R.layout.door_layout);
         final String status = device.getStatus();
         final String lock = device.getLock();
-        TextView statusText = findViewById(R.id.status);
-        TextView lockText = findViewById(R.id.lockStatus);
-        Switch statusSwitch = findViewById(R.id.switchDoorState);
-        Switch lockSwitch = findViewById(R.id.switchDoorLock);
+        final TextView statusText = findViewById(R.id.status);
+        final TextView lockText = findViewById(R.id.lockStatus);
+        final Switch statusSwitch = findViewById(R.id.switchDoorState);
+        final Switch lockSwitch = findViewById(R.id.switchDoorLock);
         statusText.setText(status);
         lockText.setText(lock);
         if(lock.equals("locked"))
@@ -169,13 +176,20 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(lockText.getText().equals("locked")) {
+                            lockText.setText("unlocked");
+                            lockSwitch.setChecked(false);
+                        } else {
+                            lockSwitch.setChecked(true);
+                            lockText.setText("locked");
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, status);
+                }, deviceIdInner, lockText.getText().toString());
             }
         });
         statusSwitch.setOnClickListener(new View.OnClickListener() {
@@ -184,13 +198,20 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(statusText.getText().equals("opened")) {
+                            statusSwitch.setChecked(false);
+                            statusText.setText("closed");
+                        } else {
+                            statusText.setText("opened");
+                            statusSwitch.setChecked(true);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, lock);
+                }, deviceIdInner, statusText.getText().toString());
             }
         });
     }
@@ -205,11 +226,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             color = "#" + device.getColor();
         Log.d(TAG, "createLampLayout: COLOR " + color);
         final String colorAux = color;
-        TextView statusText = findViewById(R.id.statusText);
+        final TextView statusText = findViewById(R.id.statusText);
         final TextView brightnessValue = findViewById(R.id.brightnessValue);
         final String status = device.getStatus();
         statusText.setText(status);
-        Switch lampSwitch = findViewById(R.id.lampSwitch);
+        final Switch lampSwitch = findViewById(R.id.lampSwitch);
         if(status.equals("on"))
             lampSwitch.setChecked(true);
         else
@@ -233,6 +254,13 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(statusText.getText().equals("on")) {
+                            statusText.setText("off");
+                            lampSwitch.setChecked(false);
+                        } else {
+                            lampSwitch.setChecked(true);
+                            statusText.setText("on");
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -247,9 +275,9 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 String toPrint = progress + "%";
                 brightnessValue.setText(toPrint);
-                Api.getInstance(context).setBrightness(new Response.Listener<String[]>() {
+                Api.getInstance(context).setBrightness(new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String[] response) {
+                    public void onResponse(String response) {
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -300,11 +328,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         Log.d(TAG, "createTimerLayout: " + remainingPercentage);
         String intervalString = intervalTime + " secs.";
         String remainingString = remainingTime + " secs.";
-        TextView statusText = findViewById(R.id.statusText);
+        final TextView statusText = findViewById(R.id.statusText);
         TextView intervalText = findViewById(R.id.intervalText);
         TextView remainingText = findViewById(R.id.remainingTimeText);
         ProgressBar progressBar = findViewById(R.id.remainingProgressBar);
-        Switch timerSwitch = findViewById(R.id.timerSwitch);
+        final Switch timerSwitch = findViewById(R.id.timerSwitch);
         statusText.setText(status);
         intervalText.setText(intervalString);
         remainingText.setText(remainingString);
@@ -319,13 +347,20 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(statusText.getText().equals("active")) {
+                            statusText.setText("inactive");
+                            timerSwitch.setChecked(false);
+                        } else {
+                            statusText.setText("active");
+                            timerSwitch.setChecked(true);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, status);
+                }, deviceIdInner, statusText.getText().toString());
             }
         });
     }
@@ -336,9 +371,9 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         final TextView modeText = findViewById(R.id.modeText);
         final TextView freezerTempText = findViewById(R.id.freezerTemperatureText);
         final TextView temperatureText = findViewById(R.id.temperatureText);
-        Button modeButton = findViewById(R.id.modeButton);
-        Button temperatureButton = findViewById(R.id.temperatureButton);
-        Button ftemperatureButton = findViewById(R.id.fTempetaureButton);
+        ImageButton modeButton = findViewById(R.id.modeButton);
+        ImageButton temperatureButton = findViewById(R.id.temperatureButton);
+        ImageButton ftemperatureButton = findViewById(R.id.fTemperatureButton);
         final String[] modes = {"default","vacation","party"};
         String mode = device.getMode();
         int freezerTemp = device.getFreezerTemperature();
@@ -357,9 +392,9 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 final int index = which;
                                 Log.d(TAG, "onClick: " + modes[which]);
-                                Api.getInstance(context).setMode(new Response.Listener<String[]>() {
+                                Api.getInstance(context).setMode(new Response.Listener<String>() {
                                     @Override
-                                    public void onResponse(String[] response) {
+                                    public void onResponse(String response) {
                                         modeText.setText(modes[index]);
                                     }
                                 }, new Response.ErrorListener() {
@@ -389,7 +424,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                         Api.getInstance(context).setTemperature(new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-                                String newString = numberPicker.getValue() + "º";
+                                String newString = numberPicker.getValue() + "ºC";
                                 temperatureText.setText(newString);
                             }
                         }, new Response.ErrorListener() {
@@ -431,10 +466,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Api.getInstance(context).setFreezerTemperature(new Response.Listener<String[]>() {
+                        Api.getInstance(context).setFreezerTemperature(new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String[] response) {
-                                String newString = Integer.valueOf(negVals[numberPicker.getValue()]) + "º";
+                            public void onResponse(String response) {
+                                String newString = Integer.valueOf(negVals[numberPicker.getValue()]) + "ºC";
                                 freezerTempText.setText(newString);
                             }
                         }, new Response.ErrorListener() {
@@ -462,25 +497,25 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         final String deviceIdInner = deviceId;
         final String[] modes = {"cool", "heat", "fan"};
         setContentView(R.layout.ac_layout);
-        TextView statusText = findViewById(R.id.statusText);
-        TextView temperatureText = findViewById(R.id.temperatureText);
-        TextView modeText = findViewById(R.id.modeText);
-        TextView verticalSwingText = findViewById(R.id.verticalSwingText);
-        TextView horizontalSwingText = findViewById(R.id.horizontalSwingText);
-        TextView fanSpeedText = findViewById(R.id.fanSpeedText);
-        Switch acSwitch = findViewById(R.id.acSwitch);
-        Button temperatureButton = findViewById(R.id.temperatureButton);
-        Button vSwingButton = findViewById(R.id.verticalSwingButton);
-        Button hSwingButton = findViewById(R.id.horizontalSwingButton);
-        Button fanSpeedButton = findViewById(R.id.fanSpeedButton);
-        Button modeButton = findViewById(R.id.modeButton);
+        final TextView statusText = findViewById(R.id.statusText);
+        final TextView temperatureText = findViewById(R.id.temperatureText);
+        final TextView modeText = findViewById(R.id.modeText);
+        final TextView verticalSwingText = findViewById(R.id.verticalSwingText);
+        final TextView horizontalSwingText = findViewById(R.id.horizontalSwingText);
+        final TextView fanSpeedText = findViewById(R.id.fanSpeedText);
+        final Switch acSwitch = findViewById(R.id.acSwitch);
+        ImageButton temperatureButton = findViewById(R.id.temperatureButton);
+        ImageButton vSwingButton = findViewById(R.id.verticalSwingButton);
+        ImageButton hSwingButton = findViewById(R.id.horizontalSwingButton);
+        ImageButton fanSpeedButton = findViewById(R.id.fanSpeedButton);
+        ImageButton modeButton = findViewById(R.id.modeButton);
         final String status = device.getStatus();
         String mode = device.getMode();
         String verticalSwing = device.getVerticalSwing();
         String horizontalSwing = device.getHorizontalSwing();
         String fanSpeed = device.getFanSpeed();
         int temperature = device.getTemperature();
-        String temperatureString = temperature + "°C";
+        final String temperatureString = temperature + "°C";
         String verticalSwingString = verticalSwing.equals("auto") ? verticalSwing : verticalSwing + "°";
         String horizontalSwingString = horizontalSwing.equals("auto") ? horizontalSwing : horizontalSwing + "°";
         statusText.setText(status);
@@ -499,13 +534,20 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
+                        if(statusText.getText().equals("on")) {
+                            statusText.setText("off");
+                            acSwitch.setChecked(false);
+                        } else {
+                            statusText.setText("on");
+                            acSwitch.setChecked(true);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, status);
+                }, deviceIdInner, statusText.getText().toString());
             }
         });
         modeButton.setOnClickListener(new View.OnClickListener() {
@@ -516,10 +558,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                         .setItems(modes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 final int index = which;
-                                Log.d(TAG, "onClick: " + modes[which]);
-                                Api.getInstance(context).setMode(new Response.Listener<String[]>() {
+                                Api.getInstance(context).setMode(new Response.Listener<String>() {
                                     @Override
-                                    public void onResponse(String[] response) {
+                                    public void onResponse(String response) {
+                                        modeText.setText(modes[index]);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
@@ -548,7 +590,10 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                         Log.d(TAG, "onClick: " + dialog);
                         Api.getInstance(context).setTemperature(new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String response) { }
+                            public void onResponse(String response) {
+                                String newString = numberPicker.getValue() + "ºC";
+                                temperatureText.setText(newString);
+                            }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
@@ -579,9 +624,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Api.getInstance(context).setVerticalSwing(new Response.Listener<String[]>() {
+                        Api.getInstance(context).setVerticalSwing(new Response.Listener<String>() {
                                 @Override
-                                public void onResponse(String[] response) {
+                                public void onResponse(String response) {
+                                    String newString = (swings[numberPicker.getValue()]).equals("auto") ? swings[numberPicker.getValue()] : swings[numberPicker.getValue()] + "°";
+                                    verticalSwingText.setText(newString);
                                 }
                             }, new Response.ErrorListener() {
                             @Override
@@ -613,9 +660,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Api.getInstance(context).setHorizontalSwing(new Response.Listener<String[]>() {
+                        Api.getInstance(context).setHorizontalSwing(new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String[] response) {
+                            public void onResponse(String response) {
+                                String newString = (swings[numberPicker.getValue()]).equals("auto") ? swings[numberPicker.getValue()] : swings[numberPicker.getValue()] + "°";
+                                horizontalSwingText.setText(newString);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -647,9 +696,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Api.getInstance(context).setFanSpeed(new Response.Listener<String[]>() {
+                        Api.getInstance(context).setFanSpeed(new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String[] response) {
+                            public void onResponse(String response) {
+                                String newString = speeds[numberPicker.getValue()];
+                                fanSpeedText.setText(newString);
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -669,15 +720,15 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         });
     }
 
-    private void createOvenLayout(DeviceType device, String deviceId) {
+    private void createOvenLayout(final DeviceType device, String deviceId) {
         final String deviceIdInner = deviceId;
         setContentView(R.layout.oven_layout);
-        TextView statusText = findViewById(R.id.statusText);
+        final TextView statusText = findViewById(R.id.statusText);
         TextView temperatureText = findViewById(R.id.temperatureText);
         TextView heatText = findViewById(R.id.heatText);
         TextView grillText = findViewById(R.id.grillText);
         TextView convectionText = findViewById(R.id.convectionText);
-        Switch ovenSwitch = findViewById(R.id.ovenSwitch);
+        final Switch ovenSwitch = findViewById(R.id.ovenSwitch);
         ImageButton temperatureButton = findViewById(R.id.temperatureButton);
         ImageButton heatButton = findViewById(R.id.heatButton);
         ImageButton grillButton = findViewById(R.id.grillButton);
@@ -706,14 +757,21 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 Api.getInstance(context).toggleDevice(new Response.Listener<Boolean>() {
                     @Override
                     public void onResponse(Boolean response) {
-
+                        if(statusText.getText().equals("on")) {
+                            statusText.setText("off");
+                            ovenSwitch.setChecked(false);
+                        }
+                        else {
+                            statusText.setText("on");
+                            ovenSwitch.setChecked(true);
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                }, deviceIdInner, status);
+                }, deviceIdInner, statusText.getText().toString());
             }
         });
         temperatureButton.setOnClickListener(new View.OnClickListener() {

@@ -60,4 +60,5 @@
     <string name="change_grill">Cambiar Opción de Parrilla</string>
     <string name="change_heat">Cambiar Calor</string>
     <string name="change_convection">Cambiar Convección</string>
+    <string name="no_rooms">No Se Han Añadido Cuartos!</string>
 </resources>

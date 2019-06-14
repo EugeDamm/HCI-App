@@ -25,7 +25,8 @@ public class Api {
     // Use IP 10.0.2.2 instead of 127.0.0.1 when running Android emulator in the
     // same computer that runs the API.
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
-    private final String URL = "http://10.0.2.2:8080/api/";
+    // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
+    private final String URL = "http://192.168.0.12:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
@@ -83,7 +84,6 @@ public class Api {
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
-
         return uuid;
     }
 
@@ -169,26 +169,26 @@ public class Api {
         return uuid;
     }
 
-    public String setBrightness(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, int brightness) {
+    public String setBrightness(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, int brightness) {
         String url = URL + "devices/" + deviceId + "/setBrightness";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         Integer[] data = {brightness};
-        GsonRequest<Integer[], String[]> request =
-                new GsonRequest<Integer[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<Integer[], String> request =
+                new GsonRequest<Integer[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
         return uuid;
     }
 
-    public String setMode(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
+    public String setMode(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
         String url = URL + "devices/" + deviceId + "/setMode";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         String[] data = {mode};
-        GsonRequest<String[], String[]> request =
-                new GsonRequest<String[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<String[], String> request =
+                new GsonRequest<String[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
@@ -208,52 +208,52 @@ public class Api {
         return uuid;
     }
 
-    public String setFreezerTemperature(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, int temperature) {
+    public String setFreezerTemperature(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, int temperature) {
         String url = URL + "devices/" + deviceId + "/setFreezerTemperature";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         Integer[] data = {temperature};
-        GsonRequest<Integer[], String[]> request =
-                new GsonRequest<Integer[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<Integer[], String> request =
+                new GsonRequest<Integer[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
         return uuid;
     }
 
-    public String setVerticalSwing(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
+    public String setVerticalSwing(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
         String url = URL + "devices/" + deviceId + "/setVerticalSwing";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         String[] data = {mode};
-        GsonRequest<String[], String[]> request =
-                new GsonRequest<String[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<String[], String> request =
+                new GsonRequest<String[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
         return uuid;
     }
 
-    public String setHorizontalSwing(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
+    public String setHorizontalSwing(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
         String url = URL + "devices/" + deviceId + "/setHorizontalSwing";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         String[] data = {mode};
-        GsonRequest<String[], String[]> request =
-                new GsonRequest<String[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<String[], String> request =
+                new GsonRequest<String[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
         return uuid;
     }
 
-    public String setFanSpeed(Response.Listener<String[]> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
+    public String setFanSpeed(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
         String url = URL + "devices/" + deviceId + "/setVerticalSwing";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         String[] data = {mode};
-        GsonRequest<String[], String[]> request =
-                new GsonRequest<String[], String[]>(Request.Method.PUT, url, data, "result", new TypeToken<String[]>(){}, headers, listener, errorListener);
+        GsonRequest<String[], String> request =
+                new GsonRequest<String[], String>(Request.Method.PUT, url, data, "result", new TypeToken<String>(){}, headers, listener, errorListener);
         String uuid = UUID.randomUUID().toString();
         request.setTag(uuid);
         requestQueue.add(request);
