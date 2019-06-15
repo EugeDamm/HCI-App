@@ -2,31 +2,18 @@ package ar.edu.itba.hci.smarthomesystem;
 
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import java.util.ArrayList;
@@ -41,11 +28,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Fragment fragment = null;
     private Bundle bundle = new Bundle();
     public Context context;
-    private RoomListViewModel viewModel;
-    boolean ALARM_CREATED = false;
     private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
-    String alarmId;
-    private ArrayList<Device> mDevices = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +53,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 ErrorHandler.handleError(error, MainActivity.this);
             }
         });
-        if(display.getRotation() == Surface.ROTATION_90) {
-            loadDoubleView();
-        } else {
             fragment = new Rooms();
             loadFragment(fragment);
-        }
-
     }
 
     @Override
@@ -111,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             if(d.getTypeId().equals(ALARM_TYPE_ID)) {
                                 AlarmFragment alarmFragment = new AlarmFragment();
                                 Bundle bundle = new Bundle();
-                                Alarm alarm = new Alarm(d.getName(), d.getId(), d.getTypeId());
+                                Alarm alarm = new Alarm("",d.getName(), d.getId());
                                 bundle.putSerializable("alarm", alarm);
                                 alarmFragment.setArguments(bundle);
                                 loadFragment(alarmFragment);
