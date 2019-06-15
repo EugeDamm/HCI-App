@@ -5,7 +5,7 @@
     <string name="app_name">Smart Home System</string>
 
     <!-- Routine Mode -->
-    <string name="no_routines">No available Routines.</string>
+    <string name="no_routines">No Routines Have Been Added!</string>
 
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>

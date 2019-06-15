@@ -1,6 +1,7 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -17,12 +18,12 @@ import java.util.List;
 
 public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>  {
 
-    private List<T> elements;
+    public List<T> elements;
     private OnItemListener onItemListener;
     private ViewGroup viewGroup;
     private String type;
     private String elementType;
-    private MyViewHolder myViewHolder;
+    public MyViewHolder myViewHolder;
     private final String BLINDS_TYPE_ID = "eu0v2xgprrhhg41g";
     private final String LAMP_TYPE_ID = "go46xmbqeomjrsjr";
     private final String OVEN_TYPE_ID = "im77xxyulpegfmv8";
@@ -57,7 +58,8 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyV
             this.elementType = pickDevice(deviceId);
             Log.d("Adapter", "onBindViewHolder: type = " + this.elementType);
             icon = chooseBitmap();
-        } else {
+        }
+        else {
             icon = BitmapFactory.decodeResource( viewGroup.getResources(), R.drawable.room);
         }
         SpannableStringBuilder ssb = new SpannableStringBuilder(elementName);
@@ -133,11 +135,11 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyV
 
         @Override
         public void onClick(View v) {
-            onItemListener.onItemClick(getAdapterPosition(), v.getContext());
+            onItemListener.onItemClick(getAdapterPosition(), v.getContext(), v);
         }
     }
 
     public interface OnItemListener {
-        void onItemClick(int position, Context context);
+        void onItemClick(int position, Context context, View view);
     }
 }

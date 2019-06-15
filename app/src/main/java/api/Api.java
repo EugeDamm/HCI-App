@@ -7,6 +7,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
+import ar.edu.itba.hci.smarthomesystem.Routine;
 import ar.edu.itba.hci.smarthomesystem.State;
 import devices.DeviceType;
 
@@ -24,9 +26,10 @@ public class Api {
     private static RequestQueue requestQueue;
     // Use IP 10.0.2.2 instead of 127.0.0.1 when running Android emulator in the
     // same computer that runs the API.
+    // IP Itba-Invitados Cravi 10.7.21.60
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
     // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
-    private final String URL = "http://192.168.0.12:8080/api/";
+    private final String URL = "http://10.0.2.2:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
@@ -316,4 +319,307 @@ public class Api {
     }
 
 
+    public String getRoutines(Response.Listener<ArrayList<Routine>> listener, Response.ErrorListener errorListener) {
+        String url = URL + "routines/";
+        GsonRequest<Object, ArrayList<Routine>> request =
+                new GsonRequest<>(Request.Method.GET, url, null, "routines", new TypeToken<ArrayList<Routine>>(){}, null, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public void makeActions(String deviceId, String actionName, String params) {
+        switch (actionName) {
+            case "turnOn":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "off");
+                break;
+
+            case "turnOff":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "on");
+                break;
+
+            case "open":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "closed");
+                break;
+
+            case "close":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "opened");
+                break;
+
+            case "setTemperature":
+                setTemperature(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, Integer.getInteger(params));
+                break;
+
+            case "setColor":
+                setColor(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setBrightness":
+                setBrightness(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, Integer.getInteger(params));
+                break;
+
+            case "setHeat":
+                setHeat(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setGrill":
+                setGrill(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setConvection":
+                setConvection(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setMode":
+                setMode(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setVerticalSwing":
+                setVerticalSwing(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setHorizontalSwing":
+                setHorizontalSwing(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "setFanSpeed":
+                setFanSpeed(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, params);
+                break;
+
+            case "lock":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "unlocked");
+                break;
+
+            case "unlock":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "locked");
+                break;
+
+            case "armStay":
+                break;
+
+            case "armAway":
+                break;
+
+            case "disarm":
+                break;
+
+            case "setInterval":
+                break;
+
+            case "start":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "inactive");
+                break;
+
+            case "stop":
+                toggleDevice(new Response.Listener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean response) {
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, "active");
+                break;
+
+            case "setFreezerTemperature":
+                setFreezerTemperature(new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, deviceId, Integer.getInteger(params));
+                break;
+
+                default:
+                    break;
+
+        }
+    }
 }
