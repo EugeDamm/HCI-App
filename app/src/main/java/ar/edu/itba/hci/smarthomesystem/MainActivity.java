@@ -7,22 +7,28 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,13 +66,47 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
-        if(display.getRotation() == Surface.ROTATION_90) {
-            loadDoubleView();
-        } else {
-            fragment = new Rooms();
-            loadFragment(fragment);
-        }
+         if(savedInstanceState == null) {
+             fragment = new Rooms();
+             loadFragment(fragment);
+         } else {
+             loadFragment(fragment);
+         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.change_ip:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.change_ip);
+                final EditText input = new EditText(this);
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.setURL(input.getText().toString());
+                        loadFragment(fragment);
+                        //String m_Text = input.getText().toString();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -97,11 +137,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new Alarm();
         }
         return loadFragment(fragment);
-    }
-
-    private void loadDoubleView() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.rooms_left, new Rooms()).addToBackStack(null).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.specific_room_right, new Rooms()).addToBackStack(null).commit();
     }
 
     private boolean loadFragment(Fragment fragment) {

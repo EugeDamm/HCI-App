@@ -245,7 +245,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         colorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openColorGradle(colorAux, deviceIdInner);
+                openColorGradle(colorAux, deviceIdInner, colorButton);
             }
         });
         lampSwitch.setOnClickListener(new View.OnClickListener() {
@@ -293,7 +293,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         });
     }
 
-    private void openColorGradle(String color, final String deviceId) {
+    private void openColorGradle(String color, final String deviceId, final Button colorButton) {
         final int hexaColor = Color.parseColor(color);
         AmbilWarnaDialog colorGradle = new AmbilWarnaDialog(this, hexaColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
@@ -301,18 +301,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
 
             @Override
             public void onOk(AmbilWarnaDialog dialog, final int color) {
-                String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                final String hexColor = String.format("#%06X", (0xFFFFFF & color));
                 Api.getInstance(context).setColor(new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        colorButton.setBackgroundColor(Color.parseColor(hexColor));
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         handleError(error);
                     }
-                },deviceId, hexColor);
+                }, deviceId, hexColor);
             }
         });
         colorGradle.show();

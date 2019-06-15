@@ -18,14 +18,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import api.Api;
+import api.Error;
 
 public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
 
@@ -82,23 +91,25 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
             Api.getInstance(getContext()).getRooms(new Response.Listener<ArrayList<Room>>() {
                 @Override
                 public void onResponse(ArrayList<Room> response) {
-                    if(!list.toString().equals(response.toString())) {
-                        adapter.setElements(response);
-                        list = response;
-                        recyclerView.setAdapter(adapter);
-                        if(list == null || list.isEmpty()) {
-                            emptyText.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                        } else {
-                            emptyText.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
+                    if(list != null) {
+                        if (!list.toString().equals(response.toString())) {
+                            adapter.setElements(response);
+                            list = response;
+                            recyclerView.setAdapter(adapter);
+                            if (list == null || list.isEmpty()) {
+                                emptyText.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.GONE);
+                            } else {
+                                emptyText.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
+                    handleError(error);
                 }
             });
         }
@@ -110,4 +121,31 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
         intent.putExtra("room_name", list.get(position));
         startActivity(intent);
     }
+
+    public void handleError(VolleyError error) {
+        Error response = null;
+
+        NetworkResponse networkResponse = error.networkResponse;
+        if ((networkResponse != null) && (error.networkResponse.data != null)) {
+            try {
+                String json = new String(
+                        error.networkResponse.data,
+                        HttpHeaderParser.parseCharset(networkResponse.headers));
+
+                JSONObject jsonObject = new JSONObject(json);
+                json = jsonObject.getJSONObject("error").toString();
+
+                Gson gson = new Gson();
+                response = gson.fromJson(json, Error.class);
+            } catch (JSONException e) {
+            } catch (UnsupportedEncodingException e) {
+            }
+        }
+        Log.e(TAG, error.toString());
+        String text = getResources().getString(R.string.error_message);
+        if (response != null)
+            text += " " + response.getDescription().get(0);
+        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+    }
+
 }

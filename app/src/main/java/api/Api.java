@@ -29,11 +29,15 @@ public class Api {
     // IP Itba-Invitados Cravi 10.7.21.60
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
     // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
-    private final String URL = "http://10.0.2.2:8080/api/";
+    private static String URL = "http://192.168.0.12:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
         this.requestQueue = VolleySingleton.getInstance(context).getRequestQueue();
+    }
+
+    public static void setURL(String input) {
+        URL = "http://" + input + ":8080/api/";
     }
 
     public static synchronized Api getInstance(Context context) {
@@ -251,7 +255,7 @@ public class Api {
     }
 
     public String setFanSpeed(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String mode) {
-        String url = URL + "devices/" + deviceId + "/setVerticalSwing";
+        String url = URL + "devices/" + deviceId + "/setFanSpeed";
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         String[] data = {mode};
