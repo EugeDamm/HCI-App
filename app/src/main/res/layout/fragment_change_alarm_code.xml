@@ -1,20 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ChangeAlarmCode"
     tools:locale="es">
 
    <EditText
-       android:id="@+id/editText"
+       android:id="@+id/oldCode"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
+       android:layout_marginTop="52dp"
+       android:backgroundTint="@color/colorPrimary"
+       android:hint="@string/enter_old_code"
        android:inputType="number"
        android:maxLength="4"
        android:textAlignment="center"
-       android:layout_marginTop="30dp"
-       android:backgroundTint="@color/colorPrimary"
-       android:textCursorDrawable="@color/colorPrimary"/>
+       android:textCursorDrawable="@color/colorPrimary"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+   <EditText
+       android:id="@+id/newCode"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="156dp"
+       android:backgroundTint="@color/colorPrimary"
+       android:hint="@string/enter_new_code"
+       android:inputType="number"
+       android:maxLength="4"
+       android:textAlignment="center"
+       android:textCursorDrawable="@color/colorPrimary"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
+
+   <EditText
+       android:id="@+id/confirmCode"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="260dp"
+       android:backgroundTint="@color/colorPrimary"
+       android:hint="@string/confirm_code"
+       android:inputType="number"
+       android:maxLength="4"
+       android:textAlignment="center"
+       android:textCursorDrawable="@color/colorPrimary"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
+
+   <Button
+       android:id="@+id/save_changes"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="140dp"
+       android:layout_marginTop="380dp"
+       android:text="@string/save_changes"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

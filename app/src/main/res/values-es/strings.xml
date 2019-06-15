@@ -7,6 +7,7 @@
     <string name="title_dashboard">Rutinas</string>
     <string name="title_home">Habitaciones</string>
     <string name="title_notifications">Alarma</string>
+    <string name="save_changes">Guardar Cambios</string>
 
     <!-- Routines Mode -->
     <string name="no_routines">No hay Rutinas disponibles.</string>
@@ -28,9 +29,25 @@
         <item>Room 13</item>
         <item>Room 14</item>
     </string-array>
+
     <string name="fake_room">Cuarto Falso</string>
+    <string name="empty_field">El campo no puede estar vacio</string>
     <string name="no_devices_added">No Hay Dispositivos Disponibles</string>
     <string name="error_message">Error</string>
+    <string name="short_code">El codigo debe ser de 4 digitos</string>
+    <string name="alarm_code_warning">ATENCIÓN: El código por defecto de la alarma es 1234, es altamente recomendable que configure la alarma con su propio código antes de usar las funciones</string>
+    <string name="confirm_code">Confirme el codigo</string>
+    <string name="enter_new_code">Ingresar nuevo codigo</string>
+    <string name="enter_old_code">Ingresa el codigo anterior</string>
+    <string name="old_code_wrong">El codigo anterior es incorrecto</string>
+    <string name="codes_dont_match">Los nuevos codigo no son iguales</string>
+    <string name="code_changed">Codigo cambiado con exito!</string>
+    <string name="home_mode_activated">Modo En Casa activado con exito!</string>
+    <string name="out_home_mode_activated">Modo Fuera de Casa activado con exito!</string>
+    <string name="disarm_mode">Modo desactivado con exito!</string>
+    <string name="alarm_not_created">La alarma no esta agregada. Podes agregarla desde la pagina web.</string>
+    <string name="pop_message">Por favor ingrese el codigo de la alarma</string>
+
     <string name="status">Estado Actual</string>
     <string name="level">Nivel Actual</string>
     <string name="lock_status">Estado Actual Traba</string>
@@ -61,4 +78,6 @@
     <string name="change_heat">Cambiar Calor</string>
     <string name="change_convection">Cambiar Convección</string>
     <string name="no_rooms">No Se Han Añadido Cuartos!</string>
+    <string name="wrong_code">Codigo Incorrecto!</string>
+    <string name="disactivate_mode">Desactivar Modo</string>
 </resources>

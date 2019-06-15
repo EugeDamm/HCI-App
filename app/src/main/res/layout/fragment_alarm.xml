@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Alarm"
+    tools:context=".AlarmFragment"
     android:id="@+id/alarm"
     tools:locale="es">
 
@@ -19,7 +19,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/home_mode"
+                android:id="@+id/homeMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
@@ -29,20 +29,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
-                android:id="@+id/home_mode_switch"
+                android:id="@+id/homeModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="72dp"
-                android:layout_marginEnd="68dp"
+                android:layout_marginStart="288dp"
+                android:layout_marginTop="32dp"
                 android:checked="false"
                 android:theme="@style/SwitchTheme"
-                app:layout_constraintBottom_toBottomOf="@+id/home_mode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/home_mode"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/out_home_mode"
+                android:id="@+id/outHomeMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
@@ -52,20 +50,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Switch
-                android:id="@+id/out_home_mode_switch"
+                android:id="@+id/outHomeModeSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="72dp"
-                android:layout_marginEnd="68dp"
+                android:layout_marginStart="288dp"
+                android:layout_marginTop="124dp"
                 android:checked="false"
                 android:theme="@style/SwitchTheme"
-                app:layout_constraintBottom_toBottomOf="@+id/out_home_mode"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/out_home_mode"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/change_password"
+                android:id="@+id/changePassword"
                 android:layout_width="241dp"
                 android:layout_height="42dp"
                 android:layout_gravity="center_horizontal"
@@ -75,6 +71,19 @@
                 android:text="@string/change_password"
                 android:textColor="#FFFF"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="387dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="274dp"
+                android:text="@string/alarm_code_warning"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="#DC918787"
+                android:textStyle="italic"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>

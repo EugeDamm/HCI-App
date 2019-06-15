@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.Serializable;
 
 import devices.Ac;
+import devices.Alarm;
 import devices.Blinds;
 import devices.DeviceType;
 import devices.Door;
@@ -22,6 +23,7 @@ public class State implements Serializable {
     private final String DOOR_TYPE_ID = "lsf78ly0eqrjbz91";
     private final String TIMER_TYPE_ID = "ofglvd9gqX8yfl3l";
     private final String REFRIGERATOR_TYPE_ID = "rnizejqr2di0okho";
+    private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
 
     private DeviceType createdDevice;
     private String mode, status, color, heat, grill, convection, verticalSwing, horizontalSwing, fanSpeed, lock;
@@ -40,8 +42,11 @@ public class State implements Serializable {
             this.createdDevice = new Blinds(status, level, BLINDS_TYPE_ID);
         }else if(typeId.equals(OVEN_TYPE_ID)) {
             this.createdDevice = new Oven(status, temperature, heat, grill, convection, OVEN_TYPE_ID);
-        } else
+        } else if(typeId.equals(TIMER_TYPE_ID)) {
             this.createdDevice = new Timer(status, interval, remaining, TIMER_TYPE_ID);
+        } else {
+            this.createdDevice = new Alarm(status, mode, ALARM_TYPE_ID);
+        }
     }
 
     public DeviceType getCreatedDevice() {
