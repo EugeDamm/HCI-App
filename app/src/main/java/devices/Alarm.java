@@ -1,29 +1,29 @@
 package devices;
 
 public class Alarm extends DeviceType {
-    private String id;
-    private String state;
+    private String mode;
     private String typeId;
+    private String status;
     private String name;
+    private String id;
+    private final String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
     private final int codeLength = 4;
 
-    public Alarm(String name, String id, String typeId) {
+    public Alarm(String status, String mode, String id) {
+        this.status = status;
+        this.mode = mode;
         this.id = id;
-        this.typeId = typeId;
-        this.name = name;
+    }
 
-//        this.typeId = typeId;
+    public Alarm(String name, String id) {
+        this.name = name;
+        this.id = id;
     }
 
 
     public String getId() {
         return id;
     }
-
-//    @Override
-//    public String getTypeId() {
-//        return typeId;
-//    }
 
 
     public void setId(String id) {
@@ -34,15 +34,15 @@ public class Alarm extends DeviceType {
         return codeLength;
     }
 
-    public String getState() {
-        return state;
+    public String getStatus() {
+        return status;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStatus(String state) {
+        this.status = state;
     }
     public String getTypeId() {
-        return this.typeId;
+        return ALARM_TYPE_ID;
     }
 
     public String getName() { return this.name; }

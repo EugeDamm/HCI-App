@@ -48,6 +48,7 @@
     <string name="out_home_mode_activated">Out of Home Mode activated successfully</string>
     <string name="disarm_mode">Mode desactivated successfully</string>
     <string name="tool">tool</string>
+    <string name="wrong_code">Wrong Code!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="alarm_not_created">The alarm it is not added. You can add it from the webpage.</string>
@@ -83,4 +84,5 @@
     <string name="change_heat">Change Heat</string>
     <string name="change_convection">Change Convection</string>
     <string name="no_rooms">No Rooms Have Been Added!</string>
+    <string name="disactivate_mode">Disactivate Mode</string>
 </resources>

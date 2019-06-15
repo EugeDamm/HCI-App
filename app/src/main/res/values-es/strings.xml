@@ -41,7 +41,6 @@
     <string name="enter_old_code">Ingresa el codigo anterior</string>
     <string name="old_code_wrong">El codigo anterior es incorrecto</string>
     <string name="codes_dont_match">Los nuevos codigo no son iguales</string>
-    <string name="mode_activated">" activado con exito!"</string>
     <string name="code_changed">Codigo cambiado con exito!</string>
     <string name="home_mode_activated">Modo En Casa activado con exito!</string>
     <string name="out_home_mode_activated">Modo Fuera de Casa activado con exito!</string>
@@ -79,4 +78,6 @@
     <string name="change_heat">Cambiar Calor</string>
     <string name="change_convection">Cambiar Convección</string>
     <string name="no_rooms">No Se Han Añadido Cuartos!</string>
+    <string name="wrong_code">Codigo Incorrecto!</string>
+    <string name="disactivate_mode">Desactivar Modo</string>
 </resources>
