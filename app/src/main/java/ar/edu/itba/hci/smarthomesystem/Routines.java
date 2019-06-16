@@ -71,8 +71,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         if (list == null || list.isEmpty()) {
             no_routines.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             no_routines.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
@@ -82,11 +81,11 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         adapter.setElements(list);
         recyclerView.setHasFixedSize(true); // improves performance
         recyclerView.setAdapter(adapter);
-        getResponceAfterInterval.run();
+        getResponseAfterInterval.run();
         return view;
     }
 
-    private Runnable getResponceAfterInterval = new Runnable() {
+    private Runnable getResponseAfterInterval = new Runnable() {
         public void run() {
             handler.postDelayed(this, 30*1000);
             Api.getInstance(getContext()).getRoutines(new Response.Listener<ArrayList<Routine>>() {

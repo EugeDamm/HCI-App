@@ -78,6 +78,10 @@
     <string name="change_heat">Cambiar Calor</string>
     <string name="change_convection">Cambiar Convección</string>
     <string name="no_rooms">No Se Han Añadido Cuartos!</string>
+    <string name="change_ip">Cambiar Dirección IP</string>
     <string name="wrong_code">Codigo Incorrecto!</string>
-    <string name="disactivate_mode">Desactivar Modo</string>
+    <string name="deactivated_mode">Desactivar Modo</string>
+    <string name="prompt">Hola Dime Algo!</string>
+    <string name="no_internet_connection">Ups! Parece que hay un error en tu conexión. Por favor, intente arreglarlo y vuelva a intentar luego.</string>
+    <string name="no_connection_image">Imágen Sin Conexión</string>
 </resources>

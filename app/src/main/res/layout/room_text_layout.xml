@@ -3,7 +3,9 @@
     android:id="@+id/list_element"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="30sp"
+    android:textSize="20sp"
+    android:fontFamily="sans-serif-light"
+    android:textStyle="bold"
     android:layout_margin="12dp"
     android:padding="12dp">
 </TextView>

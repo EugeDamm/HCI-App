@@ -48,7 +48,7 @@ public class RecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerAdapter.MyV
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
-        String elementName = "  " + elements.get(i).toString();
+        String elementName = "    " + elements.get(i).toString();
         Bitmap icon;
         if(this.type.equals("device")) {
             Log.d("Adapter", "onBindViewHolder: device = " + elements.get(i));
