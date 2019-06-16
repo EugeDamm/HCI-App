@@ -50,30 +50,33 @@ public class ChangeAlarmCode extends Fragment {
                 final EditText newCode = view.findViewById(R.id.newCode);
                 final EditText confirmCode = view.findViewById(R.id.confirmCode);
                 if( validates(oldCode.getText().toString()) && validates(newCode.getText().toString()) && validates(confirmCode.getText().toString())) {
-                        ArrayList<String> params = new ArrayList<>();
-                        params.add((oldCode.getText().toString()));
-                        params.add((newCode.getText().toString()));
-                        Api.getInstance(getActivity()).changePassword(alarm.getId(), params, new Response.Listener<Boolean>() {
-                            @Override
-                            public void onResponse(Boolean response) {
-                                if(response) {
-                                    Toast.makeText(getContext(), R.string.code_changed, Toast.LENGTH_LONG).show();
-                                    AlarmFragment alarmFragment = new AlarmFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putSerializable("alarm", alarm);
-                                    alarmFragment.setArguments(bundle);
-                                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, alarmFragment).commit();
-                                } else {
-                                    Toast.makeText(getContext(), R.string.old_code_wrong, Toast.LENGTH_LONG).show();
+                        if(newCode.getText().toString().equals(confirmCode.getText().toString())) {
+                            ArrayList<String> params = new ArrayList<>();
+                            params.add((oldCode.getText().toString()));
+                            params.add((newCode.getText().toString()));
+                            Api.getInstance(getActivity()).changePassword(alarm.getId(), params, new Response.Listener<Boolean>() {
+                                @Override
+                                public void onResponse(Boolean response) {
+                                    if(response) {
+                                        Toast.makeText(getContext(), R.string.code_changed, Toast.LENGTH_LONG).show();
+                                        AlarmFragment alarmFragment = new AlarmFragment();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("alarm", alarm);
+                                        alarmFragment.setArguments(bundle);
+                                        getFragmentManager().beginTransaction().replace(R.id.fragment_container, alarmFragment).commit();
+                                    } else {
+                                        Toast.makeText(getContext(), R.string.old_code_wrong, Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                ErrorHandler.handleError(error, getActivity());
-                            }
-                        });
-
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    ErrorHandler.handleError(error, getActivity());
+                                }
+                            });
+                        } else {
+                            Toast.makeText(getContext(), R.string.codes_dont_match, Toast.LENGTH_LONG).show();
+                        }
                 }
             }
         });
