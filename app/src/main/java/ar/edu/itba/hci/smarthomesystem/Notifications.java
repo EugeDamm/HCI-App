@@ -1,66 +1,44 @@
 package ar.edu.itba.hci.smarthomesystem;
 
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
-public class Notifications extends Application {
+public class Notifications {
 
-    public static final String ROOMS_CHANNEL_ID = "rooms_channel";
-    public static final String ROUTINE_CHANNEL_ID = "routines_channel";
-    public static final String ALARM_CHANNEL_ID = "alarm_channel";
+    private NotificationManagerCompat notificationManager;
 
+    public Notifications() { }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void sendNotifications(int id, String title, String text, Context context, String channel, String destination) {
 
-        createNotificationsChannel();
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        activityIntent.putExtra("fragment", destination);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        Intent dismissIntent = new Intent(context, NotificationReciever.class);
+        dismissIntent.putExtra("toDismiss", id);
+        PendingIntent dismissActionIntent = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notification = new NotificationCompat.Builder(context, channel)
+                .setSmallIcon(R.drawable.logo)
+//                .setLargeIcon()
+                .setContentTitle(title)
+                .setContentText(text)
+                .addAction(R.mipmap.ic_launcher, "Dismiss", dismissActionIntent)
+                .setContentIntent(contentIntent)
+                .setOnlyAlertOnce(true)
+                .setColor(Color.GREEN)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH).build();
+
+        notificationManager = NotificationManagerCompat.from(context);
+
+        notificationManager.notify(id, notification);
     }
 
-
-
-    private void createNotificationsChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            String rooms_channel_name = "Room Channel Name";
-            String rooms_channel_description = "Room Channel Description";
-
-
-            String routines_channel_name = "Routines Channel Name";
-            String routines_channel_description = "Routines Channel Description";
-
-            String alarm_channel_name = "Alarm Channel Name";
-            String alarm_channel_description = "Alarm Channel Description";
-
-
-            int importance_low = NotificationManager.IMPORTANCE_LOW;
-            int importance_high = NotificationManager.IMPORTANCE_HIGH;
-
-
-
-
-            NotificationChannel rooms_channel = new NotificationChannel(ROOMS_CHANNEL_ID, rooms_channel_name, importance_low);
-            rooms_channel.setDescription(rooms_channel_description);
-
-            NotificationChannel routines_channel = new NotificationChannel(ROUTINE_CHANNEL_ID, routines_channel_name, importance_high);
-            routines_channel.setDescription(routines_channel_description);
-
-            NotificationChannel alarm_channel = new NotificationChannel(ALARM_CHANNEL_ID, alarm_channel_name, importance_low);
-            alarm_channel.setDescription(alarm_channel_description);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(rooms_channel);
-            notificationManager.createNotificationChannel(routines_channel);
-            notificationManager.createNotificationChannel(alarm_channel);
-
-
-        }
-    }
 }
-
-

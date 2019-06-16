@@ -58,6 +58,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
+
+        if (getIntent().getExtras() != null) {
+            String intentFragment = getIntent().getStringExtra("fragment");
+
+            switch (intentFragment) {
+                case "routines":
+                    Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+                        @Override
+                        public void onResponse(ArrayList<Routine> response) {
+                            Log.d(TAG, "onResponse: " + "LLEGO" + response);
+                            bundle.putParcelableArrayList("routines", response);
+                            fragment = new Routines();
+                            fragment.setArguments(bundle);
+                            loadFragment(fragment);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            handleError(error);
+                        }
+                    });
+                    return;
+            }
+        }
+
         if (savedInstanceState == null) {
             if(isNetworkAvailable())
                 fragment = new Rooms();
