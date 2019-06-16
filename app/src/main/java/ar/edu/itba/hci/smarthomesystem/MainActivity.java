@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            handleError(error);
+                            ErrorHandler.handleError(error, MainActivity.this);
                         }
                     });
                     return;
