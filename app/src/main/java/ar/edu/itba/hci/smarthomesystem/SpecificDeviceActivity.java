@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import android.speech.RecognizerIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,18 +30,21 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import api.Api;
 import api.Error;
 import devices.DeviceType;
+import parser.EnglishParser;
+import parser.Parser;
+import parser.SpanishParser;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class SpecificDeviceActivity extends AppCompatActivity {
-
+    private final int REQ_CODE_SPEECH_INPUT = 100;
     private final String BLINDS_TYPE_ID = "eu0v2xgprrhhg41g";
     private final String LAMP_TYPE_ID = "go46xmbqeomjrsjr";
     private final String OVEN_TYPE_ID = "im77xxyulpegfmv8";
@@ -50,28 +53,32 @@ public class SpecificDeviceActivity extends AppCompatActivity {
     private final String TIMER_TYPE_ID = "ofglvd9gqX8yfl3l";
     private final String REFRIGERATOR_TYPE_ID = "rnizejqr2di0okho";
     private final String TAG = "SpecificDeviceActivity";
+    private DeviceType deviceType;
+    private String deviceId, deviceTypeId;
     private Room room;
     private final Context context = this;
+    private String action;
+    private Parser parser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getSupportActionBar();
-        //setContentView(R.layout.specific_device);
         Intent currentIntent = getIntent();
         Bundle currentBundle = currentIntent.getExtras();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if(actionBar != null)
+            actionBar.setDisplayHomeAsUpEnabled(true);
         if(currentBundle != null) {
             room = (Room) currentBundle.get("go_back");
             String deviceName = currentBundle.getString("device_name");
-            final String deviceId = currentBundle.getString("device_id");
-            final String deviceTypeId = currentBundle.getString("device_type_id");
+            deviceId = currentBundle.getString("device_id");
+            deviceTypeId = currentBundle.getString("device_type_id");
             actionBar.setTitle(deviceName);
             Api.getInstance(this).getDeviceState(new Response.Listener<State>() {
                 @Override
                 public void onResponse(State response) {
                     response.setDeviceType(deviceTypeId);
-                    DeviceType deviceType = response.getCreatedDevice();
+                    deviceType = response.getCreatedDevice();
                     createLayoutForDevice(deviceType, deviceId);
                 }
             }, new Response.ErrorListener() {
@@ -80,6 +87,34 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                     handleError(error);
                 }
             }, deviceId);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQ_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && null != data) {
+                ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (Locale.getDefault().getDisplayLanguage().equals(Locale.ENGLISH.toLanguageTag()))
+                    parser = new EnglishParser(deviceType, deviceId, context, this);
+                else
+                    parser = new SpanishParser(deviceType, deviceId, context, this);
+                action = parser.doAction(result.get(0).toLowerCase());
+                Api.getInstance(this).getDeviceState(new Response.Listener<State>() {
+                    @Override
+                    public void onResponse(State response) {
+                        response.setDeviceType(deviceTypeId);
+                        deviceType = response.getCreatedDevice();
+                        createLayoutForDevice(deviceType, deviceId);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        handleError(error);
+                    }
+                }, deviceId);
+            }
         }
     }
 
@@ -113,12 +148,12 @@ public class SpecificDeviceActivity extends AppCompatActivity {
     private void createBlindsLayout(final DeviceType device, final String deviceId) {
         final String deviceIdInner = deviceId;
         setContentView(R.layout.blinds_layout);
-        Log.d(TAG, "createBlindsLayout: " + device);
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
         final TextView statusText = findViewById(R.id.status);
         final String status = device.getStatus();
         statusText.setText(status);
         final Switch switchButton = findViewById(R.id.switchBlinds);
-        if(status.equals("opened") || status.equals("opening"))
+        if(statusText.getText().equals("opened") || statusText.getText().equals("opening"))
             switchButton.setChecked(true);
         else
             switchButton.setChecked(false);
@@ -149,6 +184,17 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 }, deviceIdInner, statusText.getText().toString());
             }
         });
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void createDoorLayout(DeviceType device, String deviceId) {
@@ -162,11 +208,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         final Switch lockSwitch = findViewById(R.id.switchDoorLock);
         statusText.setText(status);
         lockText.setText(lock);
-        if(lock.equals("locked"))
+        if(lockText.getText().equals("locked"))
             lockSwitch.setChecked(true);
         else
             lockSwitch.setChecked(false);
-        if(status.equals("opened"))
+        if(statusText.getText().equals("opened"))
             statusSwitch.setChecked(true);
         else
             statusSwitch.setChecked(false);
@@ -214,6 +260,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 }, deviceIdInner, statusText.getText().toString());
             }
         });
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void createLampLayout(DeviceType device, String deviceId) {
@@ -231,7 +289,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         final String status = device.getStatus();
         statusText.setText(status);
         final Switch lampSwitch = findViewById(R.id.lampSwitch);
-        if(status.equals("on"))
+        if(statusText.getText().equals("on"))
             lampSwitch.setChecked(true);
         else
             lampSwitch.setChecked(false);
@@ -291,6 +349,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void openColorGradle(String color, final String deviceId, final Button colorButton) {
@@ -337,7 +407,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         intervalText.setText(intervalString);
         remainingText.setText(remainingString);
         progressBar.setProgress(remainingPercentage);
-        if(status.equals("active"))
+        if(statusText.getText().equals("active"))
             timerSwitch.setChecked(true);
         else
             timerSwitch.setChecked(false);
@@ -361,6 +431,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                         handleError(error);
                     }
                 }, deviceIdInner, statusText.getText().toString());
+            }
+        });
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
             }
         });
     }
@@ -490,7 +572,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void createAcLayout(DeviceType device, final String deviceId) {
@@ -524,7 +617,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         verticalSwingText.setText(verticalSwingString);
         modeText.setText(mode);
         fanSpeedText.setText(fanSpeed);
-        if(status.equals("on"))
+        if(statusText.getText().equals("on"))
             acSwitch.setChecked(true);
         else
             acSwitch.setChecked(false);
@@ -718,6 +811,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void createOvenLayout(final DeviceType device, String deviceId) {
@@ -747,7 +852,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         heatText.setText(heat);
         grillText.setText(grill);
         convectionText.setText(convection);
-        if(status.equals("on"))
+        if(statusText.getText().equals("on"))
             ovenSwitch.setChecked(true);
         else
             ovenSwitch.setChecked(false);
@@ -897,6 +1002,18 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+        FloatingActionButton voiceRecognizer = findViewById(R.id.fab);
+        voiceRecognizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
+                if (intent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
     }
 
     private void handleError(VolleyError error) {
@@ -937,4 +1054,6 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }

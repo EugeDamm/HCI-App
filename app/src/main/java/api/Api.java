@@ -10,6 +10,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,8 @@ import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
 import ar.edu.itba.hci.smarthomesystem.Routine;
 import ar.edu.itba.hci.smarthomesystem.State;
+import devices.DeviceType;
+import devices.Alarm;
 import devices.DeviceType;
 
 public class Api {
@@ -132,6 +136,65 @@ public class Api {
         return uuid;
     }
 
+    public String getDevices(Response.Listener<ArrayList<Device>> listener, Response.ErrorListener errorListener) {
+        String url = URL + "devices/";
+        GsonRequest<Object, ArrayList<Device>> request =
+                new GsonRequest<Object, ArrayList<Device>>(Request.Method.GET, url, null, "devices", new TypeToken<ArrayList<Device>>(){}, null, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    // ALARM
+
+    public String activateMode(String id, ArrayList<String> code, String mode, Response.Listener<Boolean> listener, Response.ErrorListener errorListener) {
+        String url = URL + "devices/" + id + "/" + mode;
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<ArrayList<String>, Boolean> request =
+                new GsonRequest<>(Request.Method.PUT, url, code, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String changePassword(String id, ArrayList<String> params, Response.Listener<Boolean> listener, Response.ErrorListener errorListener) {
+        String url = URL + "devices/" + id + "/" + "changeSecurityCode";
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<ArrayList<String>, Boolean> request =
+                new GsonRequest<>(Request.Method.PUT, url, params, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String createDevice(JSONObject params, Response.Listener<Device> listener, Response.ErrorListener errorListener) {
+        String url = URL + "devices";
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<JSONObject, Device> request =
+                new GsonRequest<>(Request.Method.POST, url, params, "device", new TypeToken<Device>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        return uuid;
+    }
+
+    public String modifyDevice(JSONObject params, String id, Response.Listener<Boolean> listener, Response.ErrorListener errorListener) {
+        Log.d("PARAMS", "modifyDevice: " + params);
+        String url = URL + "devices/" + id;
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<JSONObject, Boolean> request =
+                new GsonRequest<>(Request.Method.PUT, url, params, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid =  UUID.randomUUID().toString();
+        request.setTag(uuid);
+        return uuid;
+    }
+
     public String toggleDevice(Response.Listener<Boolean> listener, Response.ErrorListener errorListener, String deviceId, String status) {
         String url = URL + "devices/" + deviceId;
         switch (status) {
@@ -166,6 +229,18 @@ public class Api {
                 url +="/start";
                 break;
         }
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        GsonRequest<Boolean, Boolean> request =
+                new GsonRequest<Boolean, Boolean>(Request.Method.PUT, url, null, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
+    public String doAction(Response.Listener<Boolean> listener, Response.ErrorListener errorListener, String deviceId, String input) {
+        String url = URL + "devices/" + deviceId + "/" + input;
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("content-type", "application/json");
         GsonRequest<Boolean, Boolean> request =

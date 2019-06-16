@@ -60,7 +60,6 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapter<>(this, "room");
         viewModel = ViewModelProviders.of(this).get(RoomListViewModel.class);
-        // Create the observer which updates the UI.
         final Observer<ArrayList<Room>> roomsObserver = new Observer<ArrayList<Room>>() {
             @Override
             public void onChanged(final ArrayList<Room> rooms) {
@@ -75,7 +74,6 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                 }
             }
         };
-        // Observe the LiveData.
         if(viewModel != null)
             viewModel.getRooms().observe(this, roomsObserver);
         recyclerView.setHasFixedSize(true); // improves performance
