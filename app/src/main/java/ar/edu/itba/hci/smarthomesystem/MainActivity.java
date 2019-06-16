@@ -20,6 +20,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -40,6 +42,7 @@ import api.Api;
 import devices.Alarm;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+
     private final String LOG_TAG = "ar.edu.itba.apiexample";
     private static final String TAG = "MainActivity";
     private MutableLiveData<ArrayList<Room>> rooms;
@@ -55,6 +58,31 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
+
+        if (getIntent().getExtras() != null) {
+            String intentFragment = getIntent().getStringExtra("fragment");
+
+            switch (intentFragment) {
+                case "routines":
+                    Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+                        @Override
+                        public void onResponse(ArrayList<Routine> response) {
+                            Log.d(TAG, "onResponse: " + "LLEGO" + response);
+                            bundle.putParcelableArrayList("routines", response);
+                            fragment = new Routines();
+                            fragment.setArguments(bundle);
+                            loadFragment(fragment);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            ErrorHandler.handleError(error, MainActivity.this);
+                        }
+                    });
+                    return;
+            }
+        }
+
         if (savedInstanceState == null) {
             if(isNetworkAvailable())
                 fragment = new Rooms();
