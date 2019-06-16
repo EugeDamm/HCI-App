@@ -37,9 +37,13 @@ public class ErrorHandler extends Exception {
             }
         }
         Log.e("ERROR", error.toString());
-        String text = activity.getResources().getString(R.string.error_message);
-        if (response != null)
-            text += " " + response.getDescription().get(0);
-        Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
+        if(activity != null) {
+            if (activity.getBaseContext() != null) {
+                String text = activity.getResources().getString(R.string.error_message);
+                if (response != null)
+                    text += " " + response.getDescription().get(0);
+                Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

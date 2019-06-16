@@ -33,7 +33,7 @@ public class Api {
     // IP Itba-Invitados Cravi 10.7.21.60
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
     // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
-    private static String URL = "http://192.168.0.12:8080/api/";
+    private static String URL = "http://192.168.1.42:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {
@@ -41,7 +41,8 @@ public class Api {
     }
 
     public static void setURL(String input) {
-        URL = "http://" + input + ":8080/api/";
+        if(input != null && !input.equals(""))
+            URL = "http://" + input + ":8080/api/";
     }
 
     public static synchronized Api getInstance(Context context) {

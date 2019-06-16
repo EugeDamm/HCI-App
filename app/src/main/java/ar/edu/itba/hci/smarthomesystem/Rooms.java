@@ -107,7 +107,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    handleError(error);
+                    ErrorHandler.handleError(error, getActivity());
                 }
             });
         }
@@ -118,32 +118,6 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
         Intent intent = new Intent(context, SpecificRoomActivity.class);
         intent.putExtra("room_name", list.get(position));
         startActivity(intent);
-    }
-
-    public void handleError(VolleyError error) {
-        Error response = null;
-
-        NetworkResponse networkResponse = error.networkResponse;
-        if ((networkResponse != null) && (error.networkResponse.data != null)) {
-            try {
-                String json = new String(
-                        error.networkResponse.data,
-                        HttpHeaderParser.parseCharset(networkResponse.headers));
-
-                JSONObject jsonObject = new JSONObject(json);
-                json = jsonObject.getJSONObject("error").toString();
-
-                Gson gson = new Gson();
-                response = gson.fromJson(json, Error.class);
-            } catch (JSONException e) {
-            } catch (UnsupportedEncodingException e) {
-            }
-        }
-        Log.e(TAG, error.toString());
-        String text = getResources().getString(R.string.error_message);
-        if (response != null)
-            text += " " + response.getDescription().get(0);
-        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
     }
 
 }

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -46,31 +47,53 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Fragment fragment = null;
     private Bundle bundle = new Bundle();
     public Context context;
+    private Bundle savedInstanceState;
     private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
+    private Intent starterIntent;
+    private Fragment oldFragment;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.starterIntent = getIntent();
         context = getApplicationContext();
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
+        Log.d(TAG, "onCreate: estoy en el onCreate");
         if (savedInstanceState == null) {
-            if(isNetworkAvailable())
+            if (isNetworkAvailable())
                 fragment = new Rooms();
             else
                 fragment = new NoConnectionFragment();
             loadFragment(fragment);
         } else {
+            if (isNetworkAvailable())
+                fragment = new Rooms();
+            else
+                fragment = new NoConnectionFragment();
             loadFragment(fragment);
         }
+        checkConnectionRepeatedly.run();
     }
+
+    private Runnable checkConnectionRepeatedly = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(this, 10 * 1000);
+            if(!isNetworkAvailable()) {
+                recreate();
+            } else {
+                recreate();
+            }
+        }
+    };
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.d(TAG, "network is on = " + (activeNetworkInfo != null && activeNetworkInfo.isConnected()));
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -83,31 +106,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-
-            switch (menuItem.getItemId()) {
-                case R.id.change_ip:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.change_ip);
-                    final EditText input = new EditText(this);
-                    builder.setView(input);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Api.setURL(input.getText().toString());
-                            loadFragment(fragment);
-                            //String m_Text = input.getText().toString();
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-                    builder.show();
-                    return true;
-            }
-            return false;
+        switch (menuItem.getItemId()) {
+            case R.id.change_ip:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.change_ip);
+                final EditText input = new EditText(this);
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.setURL(input.getText().toString());
+                        oldFragment = fragment;
+                        recreate();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
+                return true;
+        }
+        return false;
     }
 
     @Override
