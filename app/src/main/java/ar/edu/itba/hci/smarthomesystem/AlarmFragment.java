@@ -38,6 +38,8 @@ public class AlarmFragment extends Fragment{
     private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
     Switch homeModeSwitch = null;
     Switch outHomeModeSwitch = null;
+    private Handler handler = new Handler();
+
 
 
     public AlarmFragment() {
@@ -89,8 +91,8 @@ public class AlarmFragment extends Fragment{
                         }else {
                             mode = "disarm";
                         }
+                        pickUpDialog(homeModeSwitch, mode, isChecked);
 
-                        pickUpDialog(mode);
                     }
                 });
 
@@ -103,7 +105,7 @@ public class AlarmFragment extends Fragment{
                         }else {
                             mode = "disarm";
                         }
-                        pickUpDialog(mode);
+                        pickUpDialog(outHomeModeSwitch, mode, isChecked);
                     }
                 });
             }
@@ -128,12 +130,14 @@ public class AlarmFragment extends Fragment{
                         .commit();
             }
         });
+        getResponseAfterInterval.run();
+
         // Inflate the layout for this fragment
         // view.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         return view;
     }
 
-    public void pickUpDialog(final String mode) {
+    public void pickUpDialog(final Switch switchButton, final String mode, final boolean isChecked) {
         final AlertDialog.Builder popUp = new AlertDialog.Builder(getActivity());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -164,6 +168,21 @@ public class AlarmFragment extends Fragment{
                             Toast.makeText(getContext(), modes.get(mode), Toast.LENGTH_LONG).show();
                         } else {
                                 Toast.makeText(getContext(), R.string.wrong_code, Toast.LENGTH_LONG).show();
+                            switchButton.setOnCheckedChangeListener(null);
+                            switchButton.setChecked(!isChecked);
+                            switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                @Override
+                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                    String modes;
+                                    if(isChecked){
+                                        modes = mode;
+                                    }else {
+                                        modes = "disarm";
+                                    }
+                                    pickUpDialog(switchButton, modes, isChecked);
+                                }
+                            });
+
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -178,10 +197,60 @@ public class AlarmFragment extends Fragment{
         popUp.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                homeModeSwitch.setChecked(false);
+                configSwitch(switchButton, mode, !isChecked);
                 dialog.dismiss();
             }
         });
         popUp.show();
     }
+
+    private void configSwitch(Switch switchButton, final String mode, boolean checked) {
+        switchButton.setOnCheckedChangeListener(null);
+        switchButton.setChecked(checked);
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String modes;
+                if(isChecked){
+                    modes = mode;
+                }else {
+                    modes= "disarm";
+                }
+                pickUpDialog(outHomeModeSwitch, modes, isChecked);
+            }
+        });
+    }
+
+
+    private Runnable getResponseAfterInterval = new Runnable() {
+        @Override
+        public void run() {
+            handler.postDelayed(this, 30*1000);
+            Api.getInstance(getContext()).getDeviceState(new Response.Listener<State>() {
+                @Override
+                public void onResponse(State response) {
+                    response.setDeviceType(ALARM_TYPE_ID);
+                    String status = response.getCreatedDevice().getStatus();
+
+                    if(status.equals("armedStay")) {
+                        configSwitch(homeModeSwitch, "armStay", true);
+                        outHomeModeSwitch.setClickable(false);
+                    }else if(status.equals("armedAway")) {
+                       configSwitch(outHomeModeSwitch, "armAway", true);
+                        homeModeSwitch.setClickable(false);
+                    }else {
+                        configSwitch(homeModeSwitch, "armStay", false);
+                        configSwitch(outHomeModeSwitch, "armAway", false);
+                        outHomeModeSwitch.setClickable(true);
+                        homeModeSwitch.setClickable(true);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    ErrorHandler.handleError(error, getActivity());
+                }
+            }, alarm.getId());
+        }
+    };
 }
