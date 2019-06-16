@@ -39,22 +39,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
-        Api.getInstance(this).getRooms(new Response.Listener<ArrayList<Room>>() {
-            @Override
-            public void onResponse(ArrayList<Room> response) {
-                bundle.putParcelableArrayList("rooms", response);
-                fragment = new Rooms();
-                fragment.setArguments(bundle);
-                loadFragment(fragment);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                ErrorHandler.handleError(error, MainActivity.this);
-            }
-        });
+        if(savedInstanceState == null) {
             fragment = new Rooms();
-            loadFragment(fragment);
+        }
+        loadFragment(fragment);
     }
 
     @Override
