@@ -43,6 +43,7 @@ public class AlarmFragment extends Fragment{
     private Handler handler = new Handler();
 
 
+
     public AlarmFragment() {
         // Required empty public constructor
     }
@@ -92,8 +93,8 @@ public class AlarmFragment extends Fragment{
                         }else {
                             mode = "disarm";
                         }
-
                         pickUpDialog(homeModeSwitch, mode, isChecked);
+
                     }
                 });
 
@@ -131,8 +132,8 @@ public class AlarmFragment extends Fragment{
                         .commit();
             }
         });
-
         getResponseAfterInterval.run();
+
         // Inflate the layout for this fragment
         // view.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         return view;
@@ -183,6 +184,7 @@ public class AlarmFragment extends Fragment{
                                     pickUpDialog(switchButton, modes, isChecked);
                                 }
                             });
+
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -253,5 +255,4 @@ public class AlarmFragment extends Fragment{
             }, alarm.getId());
         }
     };
-
 }

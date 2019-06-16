@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(savedInstanceState == null) {
             fragment = new Rooms();
         }
-            loadFragment(fragment);
+        loadFragment(fragment);
     }
 
     @Override
