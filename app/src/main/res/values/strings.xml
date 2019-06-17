@@ -69,7 +69,7 @@
     <string name="no_rooms">No Rooms Have Been Added!</string>
     <string name="change_ip">Change IP Address</string>
     <string name="deactivated_mode">Deactivate Mode</string>
-    <string name="prompt">Hi Tell Me Something!</string>
+    <string name="prompt">Hi tell me your action!</string>
     <string name="no_internet_connection">Oops! Looks like there is an error in your connection! Please check it out and try again later.</string>
     <string name="no_connection_image">No Connection Image</string>
     <string name="room_device_change">There has been a change in </string>
@@ -79,4 +79,5 @@
     <string name="disarm_mode">Deactivated</string>
     <string name="fake_room">Fake Room</string>
     <string name="refrigerator_mode">Actual Mode</string>
+    <string name="change_interval">Change Interval Time</string>
 </resources>
