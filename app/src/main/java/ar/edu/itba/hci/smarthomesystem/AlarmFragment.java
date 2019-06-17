@@ -2,6 +2,7 @@ package ar.edu.itba.hci.smarthomesystem;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,8 +43,10 @@ public class AlarmFragment extends Fragment{
     Switch homeModeSwitch = null;
     Switch outHomeModeSwitch = null;
     private Handler handler = new Handler();
-    private Notifications notifications;
+    private Notifications notifications = new Notifications();
     private String actualState;
+    private Context context;
+    private boolean state = false;
 
 
 
@@ -52,30 +55,32 @@ public class AlarmFragment extends Fragment{
     }
 
     private void init() {
-        modes.put("armStay", getResources().getString(R.string.home_mode_activated));
-        modes.put("armAway",  getResources().getString(R.string.out_home_mode_activated));
-        modes.put("disarm",  getResources().getString(R.string.disarm_mode_activated));
+        modes.put("armStay", context.getResources().getString(R.string.home_mode_activated));
+        modes.put("armAway",  context.getResources().getString(R.string.out_home_mode_activated));
+        modes.put("disarm",  context.getResources().getString(R.string.disarm_mode_activated));
 
-        modeString.put("armedStay",  getResources().getString(R.string.home_mode));
-        modeString.put("armedAway",  getResources().getString(R.string.out_home_mode));
-        modeString.put("disarmed",  getResources().getString(R.string.disarm_mode));
+        modeString.put("armedStay",  context.getResources().getString(R.string.home_mode));
+        modeString.put("armedAway",  context.getResources().getString(R.string.out_home_mode));
+        modeString.put("disarmed",  context.getResources().getString(R.string.disarm_mode));
 
-
-        bundle = getArguments();
-        if(bundle != null) {
-            alarm = (Alarm) bundle.getSerializable("alarm");
+        if (state) {
+            bundle = getArguments();
+            if (bundle != null) {
+                alarm = (Alarm) bundle.getSerializable("alarm");
+            }
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                Bundle savedInstanceState) {
+        state = true;
+        context = getContext();
         init();
         view = inflater.inflate(R.layout.fragment_alarm, container , false);
         changeAlarmPassword = view.findViewById(R.id.changePassword);
         homeModeSwitch = view.findViewById(R.id.homeModeSwitch);
         outHomeModeSwitch = view.findViewById(R.id.outHomeModeSwitch);
-        notifications = new Notifications();
         Api.getInstance(getContext()).getDeviceState(new Response.Listener<State>() {
             @Override
             public void onResponse(State response) {
@@ -143,7 +148,6 @@ public class AlarmFragment extends Fragment{
                         .commit();
             }
         });
-        getResponseAfterInterval.run();
 
         // Inflate the layout for this fragment
         // view.findViewById(R.id.loadingPanel).setVisibility(View.GONE);
@@ -239,27 +243,30 @@ public class AlarmFragment extends Fragment{
         @Override
         public void run() {
             handler.postDelayed(this, 30*1000);
-            Api.getInstance(getContext()).getDeviceState(new Response.Listener<State>() {
+            Api.getInstance(context).getDeviceState(new Response.Listener<State>() {
                 @Override
                 public void onResponse(State response) {
                     response.setDeviceType(ALARM_TYPE_ID);
                     String status = response.getCreatedDevice().getStatus();
                     if(!actualState.equals(status)) {
-                        String changed_from = getContext().getResources().getString(R.string.changed_from);
-                        String changed_to = getContext().getResources().getString(R.string.changed_to);
-                        notifications.sendNotifications(3, "Smart Home System", changed_from + " " + modeString.get(actualState) + " " + changed_to + " " + modeString.get(status), getContext(), NotificationsChannel.ALARM_CHANNEL_ID, "alarm");
+                        String changed_from = context.getResources().getString(R.string.changed_from);
+                        String changed_to = context.getResources().getString(R.string.changed_to);
+                        notifications.sendNotifications(3, "Smart Home System", changed_from + " " + modeString.get(actualState) + " " + changed_to + " " + modeString.get(status), context, NotificationsChannel.ALARM_CHANNEL_ID, "alarm");
+                        actualState = status;
                     }
-                    if(status.equals("armedStay")) {
-                        configSwitch(homeModeSwitch, "armStay", true);
-                        outHomeModeSwitch.setClickable(false);
-                    }else if(status.equals("armedAway")) {
-                        configSwitch(outHomeModeSwitch, "armAway", true);
-                        homeModeSwitch.setClickable(false);
-                    }else {
-                        configSwitch(homeModeSwitch, "armStay", false);
-                        configSwitch(outHomeModeSwitch, "armAway", false);
-                        outHomeModeSwitch.setClickable(true);
-                        homeModeSwitch.setClickable(true);
+                    if (state) {
+                        if (status.equals("armedStay")) {
+                            configSwitch(homeModeSwitch, "armStay", true);
+                            outHomeModeSwitch.setClickable(false);
+                        } else if (status.equals("armedAway")) {
+                            configSwitch(outHomeModeSwitch, "armAway", true);
+                            homeModeSwitch.setClickable(false);
+                        } else {
+                            configSwitch(homeModeSwitch, "armStay", false);
+                            configSwitch(outHomeModeSwitch, "armAway", false);
+                            outHomeModeSwitch.setClickable(true);
+                            homeModeSwitch.setClickable(true);
+                        }
                     }
                 }
             }, new Response.ErrorListener() {
@@ -270,4 +277,12 @@ public class AlarmFragment extends Fragment{
             }, alarm.getId());
         }
     };
+
+    public void initialize(Context context, String status, Alarm alarm) {
+        this.context = context;
+        this.alarm = alarm;
+        init();
+        actualState = status;
+        getResponseAfterInterval.run();
+    }
 }

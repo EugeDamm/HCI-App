@@ -28,6 +28,7 @@ import java.util.List;
 
 import api.Api;
 import devices.Alarm;
+import devices.DeviceType;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
@@ -43,8 +44,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Fragment oldFragment;
     private Handler handler = new Handler();
     private Routines routines = new Routines();
+    private AlarmFragment alarmFragment = new AlarmFragment();
     private Bundle routinesBundle;
+    private Bundle alarmBundle;
     private BottomNavigationView navView;
+    private String alarmInitState = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
         initializeRoutines();
+        initializeAlarm();
         if (getIntent().getExtras() != null) {
             String intentFragment = getIntent().getStringExtra("fragment");
             switch (intentFragment) {
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     return;
                 }
                 case "alarm":
-                    loadAlarm(navView);
+                    loadAlarm(true, navView);
                     return;
             }
         }
@@ -92,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             fragment = new Rooms();
                             break;
                         case "alarm":
-                            loadAlarm(navView);
+                            loadAlarm(true, navView);
                             break;
                     }
                 } else
@@ -213,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     fragment.setArguments(routinesBundle);
                     loadFragment(fragment);
                     if (navView != null) navView.setSelectedItemId(R.id.routines);
-                } else finishInitialize();
+                } else finishRoutinesInitialize();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -223,19 +228,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
     }
 
-    private void loadAlarm(final BottomNavigationView navView) {
+    private void loadAlarm(final boolean state, final BottomNavigationView navView) {
+        alarmBundle = new Bundle();
         Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
             @Override
             public void onResponse(ArrayList<Device> response) {
                 for (Device d : response) {
                     if (d.getTypeId().equals(ALARM_TYPE_ID)) {
-                        AlarmFragment alarmFragment = new AlarmFragment();
-                        Bundle bundle = new Bundle();
                         Alarm alarm = new Alarm("", d.getName(), d.getId());
-                        bundle.putSerializable("alarm", alarm);
-                        alarmFragment.setArguments(bundle);
-                        loadFragment(alarmFragment);
-                        navView.setSelectedItemId(R.id.alarm);
+                        alarmBundle.putSerializable("alarm", alarm);
+                        if (state) {
+                            alarmFragment.setArguments(alarmBundle);
+                            loadFragment(alarmFragment);
+                            if (navView != null) navView.setSelectedItemId(R.id.alarm);
+                        } else searchAlarm(alarm);
                     }
                 }
             }
@@ -247,12 +253,39 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         });
     }
 
+    private void searchAlarm(final Alarm alarm_device) {
+        Api.getInstance(context).getDeviceState(new Response.Listener<State>() {
+            @Override
+            public void onResponse (State response){
+                response.setDeviceType(ALARM_TYPE_ID);
+                final DeviceType alarm = response.getCreatedDevice();
+                alarmInitState = alarm.getStatus();
+                finishAlarmInitialize(alarm_device);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }, alarm_device.getId());
+    }
+
     private void initializeRoutines() {
         loadRoutines(false, null);
     }
 
-    private void finishInitialize() {
+    private void finishRoutinesInitialize() {
         List<Routine> aux = routinesBundle.getParcelableArrayList("routines");
         routines.initialize(aux, context);
     }
+
+    private void initializeAlarm() {
+        loadAlarm(false, null);
+    }
+
+    private void finishAlarmInitialize(Alarm alarm) {
+        if (alarm == null) return;
+        alarmFragment.initialize(context, alarmInitState, alarm);
+    }
+
 }
