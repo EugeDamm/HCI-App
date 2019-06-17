@@ -35,11 +35,15 @@ public class AlarmFragment extends Fragment{
     View view;
     Bundle bundle = new Bundle();
     private final HashMap<String, String> modes = new HashMap<>();
+    private final HashMap<String, String> modeString = new HashMap<>();
+
     private Alarm alarm;
     private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
     Switch homeModeSwitch = null;
     Switch outHomeModeSwitch = null;
     private Handler handler = new Handler();
+    private Notifications notifications;
+    private String actualState;
 
 
 
@@ -50,7 +54,13 @@ public class AlarmFragment extends Fragment{
     private void init() {
         modes.put("armStay", getResources().getString(R.string.home_mode_activated));
         modes.put("armAway",  getResources().getString(R.string.out_home_mode_activated));
-        modes.put("disarm",  getResources().getString(R.string.disarm_mode));
+        modes.put("disarm",  getResources().getString(R.string.disarm_mode_activated));
+
+        modeString.put("armedStay",  getResources().getString(R.string.home_mode));
+        modeString.put("armedAway",  getResources().getString(R.string.out_home_mode));
+        modeString.put("disarmed",  getResources().getString(R.string.disarm_mode));
+
+
         bundle = getArguments();
         if(bundle != null) {
             alarm = (Alarm) bundle.getSerializable("alarm");
@@ -65,11 +75,13 @@ public class AlarmFragment extends Fragment{
         changeAlarmPassword = view.findViewById(R.id.changePassword);
         homeModeSwitch = view.findViewById(R.id.homeModeSwitch);
         outHomeModeSwitch = view.findViewById(R.id.outHomeModeSwitch);
+        notifications = new Notifications();
         Api.getInstance(getContext()).getDeviceState(new Response.Listener<State>() {
             @Override
             public void onResponse(State response) {
                 response.setDeviceType(ALARM_TYPE_ID);
                 final DeviceType alarm = response.getCreatedDevice();
+                actualState = alarm.getStatus();
                 if(alarm.getStatus().equals("armedStay")) {
                     homeModeSwitch.setChecked(true);
                     outHomeModeSwitch.setClickable(false);
@@ -232,12 +244,16 @@ public class AlarmFragment extends Fragment{
                 public void onResponse(State response) {
                     response.setDeviceType(ALARM_TYPE_ID);
                     String status = response.getCreatedDevice().getStatus();
-
+                    if(!actualState.equals(status)) {
+                        String changed_from = getContext().getResources().getString(R.string.changed_from);
+                        String changed_to = getContext().getResources().getString(R.string.changed_to);
+                        notifications.sendNotifications(3, "Smart Home System", changed_from + " " + modeString.get(actualState) + " " + changed_to + " " + modeString.get(status), getContext(), NotificationsChannel.ALARM_CHANNEL_ID, "alarm");
+                    }
                     if(status.equals("armedStay")) {
                         configSwitch(homeModeSwitch, "armStay", true);
                         outHomeModeSwitch.setClickable(false);
                     }else if(status.equals("armedAway")) {
-                       configSwitch(outHomeModeSwitch, "armAway", true);
+                        configSwitch(outHomeModeSwitch, "armAway", true);
                         homeModeSwitch.setClickable(false);
                     }else {
                         configSwitch(homeModeSwitch, "armStay", false);

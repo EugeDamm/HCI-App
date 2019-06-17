@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -40,7 +41,7 @@ public class Notifications {
 
         Notification notification = new NotificationCompat.Builder(context, channel)
                 .setSmallIcon(R.drawable.logo)
-//                .setLargeIcon()
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.logo))
                 .setContentTitle(title)
                 .setContentText(text)
                 .addAction(R.mipmap.ic_launcher, "Dismiss", dismissActionIntent)

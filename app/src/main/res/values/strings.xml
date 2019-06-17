@@ -14,7 +14,7 @@
     <string name="save_changes">Save Changes</string>
     <string name="title_activity_specific_room2">SpecificRoomActivity2</string>
 
-    <string name="short_code">The code must be of 4 digits</string>
+    <string name="short_code">The code must be of 4 digits long</string>
     <string name="error_message">Error</string>
     <string name="no_devices_added">No Devices Added</string>
     <string name="alarm_code_warning">WARNING: The default code of the alarm is 1234, it is highly recommended that the you set your own alarm code before start activating any mode</string>
@@ -27,7 +27,7 @@
     <string name="code_changed">Code changed successfully</string>
     <string name="home_mode_activated">I\'m Home Mode activated succesfully!</string>
     <string name="out_home_mode_activated">Out of Home Mode activated successfully</string>
-    <string name="disarm_mode">Mode deactivated successfully</string>
+    <string name="disarm_mode_activated">Mode Deactivated Successfully</string>
     <string name="tool">tool</string>
     <string name="wrong_code">Wrong Code!</string>
 
@@ -72,4 +72,9 @@
     <string name="no_connection_image">No Connection Image</string>
     <string name="room_device_change">There has been a change in </string>
     <string name="phrase_finish">Click to view.</string>
+    <string name="changed_from">The Alarm mode changed from </string>
+    <string name="changed_to"> to </string>
+    <string name="disarm_mode">Deactivated</string>
+    <string name="fake_room">Fake Room</string>
+    <string name="refrigerator_mode">Actual Mode</string>
 </resources>

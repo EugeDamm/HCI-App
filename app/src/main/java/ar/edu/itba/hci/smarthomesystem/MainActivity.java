@@ -91,6 +91,28 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     navView.setSelectedItemId(R.id.rooms);
                     return;
                 }
+                case "alarm":
+                    Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
+                        @Override
+                        public void onResponse(ArrayList<Device> response) {
+                            for (Device d : response) {
+                                if (d.getTypeId().equals(ALARM_TYPE_ID)) {
+                                    AlarmFragment alarmFragment = new AlarmFragment();
+                                    Bundle bundle = new Bundle();
+                                    Alarm alarm = new Alarm("", d.getName(), d.getId());
+                                    bundle.putSerializable("alarm", alarm);
+                                    alarmFragment.setArguments(bundle);
+                                    loadFragment(alarmFragment);
+                                }
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            ErrorHandler.handleError(error, MainActivity.this);
+                        }
+                    });
+                    return;
             }
         }
         if (savedInstanceState == null) {
