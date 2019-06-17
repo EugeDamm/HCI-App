@@ -67,7 +67,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="188dp"
                 android:layout_marginEnd="84dp"
-                android:background="#E09BF5"
+                android:background="#7D77B9"
                 android:text="@string/change_password"
                 android:textColor="#FFFF"
                 app:layout_constraintEnd_toEndOf="parent"
