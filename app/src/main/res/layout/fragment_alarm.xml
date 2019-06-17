@@ -75,8 +75,8 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="321dp"
-                android:layout_height="54dp"
+                android:layout_width="326dp"
+                android:layout_height="71dp"
                 android:layout_marginStart="36dp"
                 android:layout_marginTop="252dp"
                 android:text="@string/alarm_code_warning"

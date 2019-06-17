@@ -145,7 +145,6 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
     }
 
     private void makeActions(Routine routine) {
-        // TODO: Tendria que hacer las acciones de la rutina aca.
         try {
             JSONObject action = new JSONObject(routine.actions[0].toString());
             String name = action.getString("actionName");
