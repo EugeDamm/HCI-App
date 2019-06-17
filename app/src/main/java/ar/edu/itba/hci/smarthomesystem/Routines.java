@@ -107,7 +107,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    handleError(error);
+                    ErrorHandler.handleError(error, getActivity());
                 }
             });
         }
@@ -153,31 +153,6 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         catch (JSONException e) {
             Log.e("JSONError", e.toString());
         }
-    }
-
-    public void handleError(VolleyError error) {
-        Error response = null;
-
-        NetworkResponse networkResponse = error.networkResponse;
-        if ((networkResponse != null) && (error.networkResponse.data != null)) {
-            try {
-                String json = new String(
-                        error.networkResponse.data,
-                        HttpHeaderParser.parseCharset(networkResponse.headers));
-
-                JSONObject jsonObject = new JSONObject(json);
-                json = jsonObject.getJSONObject("error").toString();
-
-                Gson gson = new Gson();
-                response = gson.fromJson(json, Error.class);
-            } catch (JSONException e) {
-            } catch (UnsupportedEncodingException e) {
-            }
-        }
-        String text = getResources().getString(R.string.error_message);
-        if (response != null)
-            text += " " + response.getDescription().get(0);
-        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
     }
 
     public void initialize(List<Routine> list, Context context) {

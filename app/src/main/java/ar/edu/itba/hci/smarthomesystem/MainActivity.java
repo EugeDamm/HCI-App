@@ -14,7 +14,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,13 +31,8 @@ import devices.DeviceType;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
 
-    private final String LOG_TAG = "ar.edu.itba.apiexample";
-    private static final String TAG = "MainActivity";
-    private MutableLiveData<ArrayList<Room>> rooms;
     private Fragment fragment = null;
-    private Bundle bundle = new Bundle();
     public Context context;
-    private Bundle savedInstanceState;
     private String ALARM_TYPE_ID = "mxztsyjzsrq7iaqc";
     private Intent starterIntent;
     private Fragment oldFragment;
@@ -153,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (!connectionApi()) {
+            fragment = new NoApiConnection();
+            loadFragment(fragment);
+            return true;
+        }
         if(isNetworkAvailable()) {
             switch (item.getItemId()) {
                 case R.id.rooms:
@@ -166,27 +165,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     break;
                 case R.id.alarm:
                     getIntent().putExtra("fragment", "alarm");
-                    Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
-                        @Override
-                        public void onResponse(ArrayList<Device> response) {
-                            for (Device d : response) {
-                                if (d.getTypeId().equals(ALARM_TYPE_ID)) {
-                                    AlarmFragment alarmFragment = new AlarmFragment();
-                                    Bundle bundle = new Bundle();
-                                    Alarm alarm = new Alarm("", d.getName(), d.getId());
-                                    bundle.putSerializable("alarm", alarm);
-                                    alarmFragment.setArguments(bundle);
-                                    loadFragment(alarmFragment);
-                                }
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            ErrorHandler.handleError(error, MainActivity.this);
-                        }
-                    });
-                    fragment = new NoAlarm();
+                    loadAlarm(true, null);
                     break;
             }
         } else {
@@ -224,6 +203,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             @Override
             public void onErrorResponse(VolleyError error) {
                 ErrorHandler.handleError(error, MainActivity.this);
+                fragment = new NoApiConnection();
+                loadFragment(fragment);
             }
         });
     }
@@ -233,22 +214,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
             @Override
             public void onResponse(ArrayList<Device> response) {
+                Alarm alarm = null;
                 for (Device d : response) {
                     if (d.getTypeId().equals(ALARM_TYPE_ID)) {
-                        Alarm alarm = new Alarm("", d.getName(), d.getId());
+                        alarm = new Alarm("", d.getName(), d.getId());
                         alarmBundle.putSerializable("alarm", alarm);
                         if (state) {
                             alarmFragment.setArguments(alarmBundle);
                             loadFragment(alarmFragment);
                             if (navView != null) navView.setSelectedItemId(R.id.alarm);
                         } else searchAlarm(alarm);
+                        break;
                     }
+                }
+                if (alarm == null) {
+                    fragment = new NoAlarm();
+                    loadFragment(fragment);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 ErrorHandler.handleError(error, MainActivity.this);
+                fragment = new NoApiConnection();
+                loadFragment(fragment);
             }
         });
     }
@@ -286,6 +275,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void finishAlarmInitialize(Alarm alarm) {
         if (alarm == null) return;
         alarmFragment.initialize(context, alarmInitState, alarm);
+    }
+
+    private boolean connectionApi() {
+        return Api.getInstance(context).isConnected();
     }
 
 }

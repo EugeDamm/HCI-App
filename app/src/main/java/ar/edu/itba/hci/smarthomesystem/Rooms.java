@@ -63,6 +63,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rooms, container, false);
         emptyText = view.findViewById(R.id.empty_room_list);
+        emptyText.setVisibility(View.GONE);
         recyclerView = view.findViewById(R.id.recycler_view_rooms);
         layoutManager = new LinearLayoutManager(container.getContext());
         recyclerView.setLayoutManager(layoutManager);
