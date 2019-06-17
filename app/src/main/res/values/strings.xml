@@ -6,13 +6,15 @@
 
     <!-- Routine Mode -->
     <string name="no_routines">No available Routines.</string>
+    <string name="routines_notification_title" translatable="false">Smart Home System</string>
+    <string name="routines_notification_text">There was a change in routines! Click to view.</string>
 
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>
     <string name="out_home_mode">Out of Home Mode</string>
     <string name="change_password">Change Password</string>
     <string name="save_changes">Save Changes</string>
-    <string name="title_activity_specific_room2">SpecificRoomActivity2</string>
+    <string name="title_activity_specific_room2" translatable="false">SpecificRoomActivity2</string>
 
     <string name="short_code">The code must be of 4 digits long</string>
     <string name="error_message">Error</string>
@@ -28,7 +30,7 @@
     <string name="home_mode_activated">I\'m Home Mode activated succesfully!</string>
     <string name="out_home_mode_activated">Out of Home Mode activated successfully</string>
     <string name="disarm_mode_activated">Mode Deactivated Successfully</string>
-    <string name="tool">tool</string>
+    <string name="tool" translatable="false">tool</string>
     <string name="wrong_code">Wrong Code!</string>
 
     <!-- TODO: Remove or change this placeholder text -->

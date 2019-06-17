@@ -5,34 +5,30 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="540dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="56dp"
+        tools:context=".Routines"
+        android:id="@+id/routines">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="540dp"
-    android:orientation="vertical"
-    android:layout_marginBottom="56dp"
-    tools:context=".Rooms"
-    android:id="@+id/rooms"
-    >
-
-        <view
-            android:id="@+id/recycler_view_rooms"
-            class="android.support.v7.widget.RecyclerView"
+        <view class="android.support.v7.widget.RecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:id="@+id/recycler_view_routines"
+            android:scrollbars="vertical"/>
 
         <TextView
-            android:id="@+id/empty_room_list"
+            android:id="@+id/empty_routines_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/no_rooms"
+            android:text="@string/no_routines"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="45sp"
             />
 
-</FrameLayout>
+    </FrameLayout>
 
 </ScrollView>

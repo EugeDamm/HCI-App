@@ -20,17 +20,17 @@ public class NotificationsChannel extends Application {
     private void createNotificationsChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            String rooms_channel_name = "Room Channel Name";
-            String rooms_channel_description = "Room Channel Description";
+            String rooms_channel_name = "Room Channel";
+            String rooms_channel_description = "A channel for all Room Notifications";
 
-            String routines_channel_name = "Routines Channel Name";
-            String routines_channel_description = "Routines Channel Description";
+            String routines_channel_name = "Routines Channel";
+            String routines_channel_description = "A channel for all Routines Notifications";
 
-            String alarm_channel_name = "Alarm Channel Name";
-            String alarm_channel_description = "Alarm Channel Description";
+            String alarm_channel_name = "Alarm Channel";
+            String alarm_channel_description = "A channel for all Alarm Notifications";
 
-            String room_devices_channel_name = "Room Devices Channel Name";
-            String room_devices_channel_description = "Room Devices Channel Description";
+            String room_devices_channel_name = "Room Devices Channel";
+            String room_devices_channel_description = "A channel for all Room Devices Notifications";
 
             int importance = NotificationManager.IMPORTANCE_HIGH;
 

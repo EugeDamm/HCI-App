@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import java.util.ArrayList;
 
 public class Notifications {
 

@@ -1,43 +1,30 @@
 package ar.edu.itba.hci.smarthomesystem;
 
 
-import android.Manifest;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import api.Api;
 import devices.Alarm;
@@ -55,6 +42,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private Intent starterIntent;
     private Fragment oldFragment;
     private Handler handler = new Handler();
+    private Routines routines = new Routines();
+    private Bundle routinesBundle;
+    private BottomNavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +52,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         this.starterIntent = getIntent();
         context = getApplicationContext();
         setContentView(R.layout.activity_main);
-        final BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
+        initializeRoutines();
         if (getIntent().getExtras() != null) {
             String intentFragment = getIntent().getStringExtra("fragment");
             switch (intentFragment) {
                 case "routines": {
-                    Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
-                        @Override
-                        public void onResponse(ArrayList<Routine> response) {
-                            bundle.putParcelableArrayList("routines", response);
-                            fragment = new Routines();
-                            fragment.setArguments(bundle);
-                            loadFragment(fragment);
-                            navView.setSelectedItemId(R.id.routines);
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            ErrorHandler.handleError(error, MainActivity.this);
-                        }
-                    });
+                    loadRoutines(true, navView);
+                    Log.d("CASE", "entro aca en rutinas");
+//                    navView.setSelectedItemId(R.id.routines);
                     return;
                 }
                 case "rooms": {
@@ -92,27 +71,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     return;
                 }
                 case "alarm":
-                    Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
-                        @Override
-                        public void onResponse(ArrayList<Device> response) {
-                            for (Device d : response) {
-                                if (d.getTypeId().equals(ALARM_TYPE_ID)) {
-                                    navView.setSelectedItemId(R.id.alarm);
-                                    AlarmFragment alarmFragment = new AlarmFragment();
-                                    Bundle bundle = new Bundle();
-                                    Alarm alarm = new Alarm("", d.getName(), d.getId());
-                                    bundle.putSerializable("alarm", alarm);
-                                    alarmFragment.setArguments(bundle);
-                                    loadFragment(alarmFragment);
-                                }
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            ErrorHandler.handleError(error, MainActivity.this);
-                        }
-                    });
+                    loadAlarm(navView);
                     return;
             }
         }
@@ -123,8 +82,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new NoConnectionFragment();
             loadFragment(fragment);
         } else {
-            if (isNetworkAvailable())
-                fragment = new Rooms();
+            if (isNetworkAvailable()) {
+                if (getIntent().getExtras() != null) {
+                    switch (getIntent().getStringExtra("fragment")) {
+                        case "routines":
+                            loadRoutines(true, navView);
+                            break;
+                        case "rooms":
+                            fragment = new Rooms();
+                            break;
+                        case "alarm":
+                            loadAlarm(navView);
+                            break;
+                    }
+                } else
+                    fragment = new Rooms();
+            }
             else
                 fragment = new NoConnectionFragment();
             loadFragment(fragment);
@@ -178,26 +151,16 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if(isNetworkAvailable()) {
             switch (item.getItemId()) {
                 case R.id.rooms:
+                    getIntent().putExtra("fragment", "rooms");
                     fragment = new Rooms();
                     loadFragment(fragment);
                     break;
                 case R.id.routines:
-                    Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
-                        @Override
-                        public void onResponse(ArrayList<Routine> response) {
-                            bundle.putParcelableArrayList("routines", response);
-                            fragment = new Routines();
-                            fragment.setArguments(bundle);
-                            loadFragment(fragment);
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            ErrorHandler.handleError(error, MainActivity.this);
-                        }
-                    });
+                    getIntent().putExtra("fragment", "routines");
+                    loadRoutines(true, null);
                     break;
                 case R.id.alarm:
+                    getIntent().putExtra("fragment", "alarm");
                     Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
                         @Override
                         public void onResponse(ArrayList<Device> response) {
@@ -237,5 +200,59 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         }
         return false;
+    }
+
+    private void loadRoutines(final boolean state, final BottomNavigationView navView) {
+        routinesBundle = new Bundle();
+        Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+            @Override
+            public void onResponse(ArrayList<Routine> response) {
+                routinesBundle.putParcelableArrayList("routines", response);
+                if (state) {
+                    fragment = routines;
+                    fragment.setArguments(routinesBundle);
+                    loadFragment(fragment);
+                    if (navView != null) navView.setSelectedItemId(R.id.routines);
+                } else finishInitialize();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ErrorHandler.handleError(error, MainActivity.this);
+            }
+        });
+    }
+
+    private void loadAlarm(final BottomNavigationView navView) {
+        Api.getInstance(MainActivity.this).getDevices(new Response.Listener<ArrayList<Device>>() {
+            @Override
+            public void onResponse(ArrayList<Device> response) {
+                for (Device d : response) {
+                    if (d.getTypeId().equals(ALARM_TYPE_ID)) {
+                        AlarmFragment alarmFragment = new AlarmFragment();
+                        Bundle bundle = new Bundle();
+                        Alarm alarm = new Alarm("", d.getName(), d.getId());
+                        bundle.putSerializable("alarm", alarm);
+                        alarmFragment.setArguments(bundle);
+                        loadFragment(alarmFragment);
+                        navView.setSelectedItemId(R.id.alarm);
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ErrorHandler.handleError(error, MainActivity.this);
+            }
+        });
+    }
+
+    private void initializeRoutines() {
+        loadRoutines(false, null);
+    }
+
+    private void finishInitialize() {
+        List<Routine> aux = routinesBundle.getParcelableArrayList("routines");
+        routines.initialize(aux, context);
     }
 }

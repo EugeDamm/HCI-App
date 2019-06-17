@@ -12,10 +12,9 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,25 +45,23 @@ import api.Error;
  */
 public class Routines extends Fragment implements RecyclerAdapter.OnItemListener {
 
-    private Notifications notifications;
+    private Notifications notifications = new Notifications();
 
-    private final String TAG = "Routines";
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     List<Routine> list;
     RoutinesRecyclerAdapter<Routine> adapter;
     private TextView no_routines;
-    static final int ROUTINES_BOX = 0;
     private final Handler handler = new Handler();
+    private Context context;
+    private boolean state = false;
 
-
-    public Routines() {
-        // Required empty public constructor
-    }
+    public Routines() { }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        state = true;
         list = getArguments().getParcelableArrayList("routines");
         View view = inflater.inflate(R.layout.fragment_routines, container, false);
         recyclerView = view.findViewById(R.id.recycler_view_routines);
@@ -82,8 +79,6 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         adapter.setElements(list);
         recyclerView.setHasFixedSize(true); // improves performance
         recyclerView.setAdapter(adapter);
-        getResponseAfterInterval.run();
-        notifications = new Notifications();
         return view;
     }
 
@@ -94,19 +89,19 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
                 @Override
                 public void onResponse(ArrayList<Routine> response) {
                     if (!list.toString().equals(response.toString())) {
-                        sendNotifications("Smart Home System", "There was a change in routines! Click to view.");
+                        sendNotifications(R.string.routines_notification_title, R.string.routines_notification_text);
                         list = response;
-                        adapter.setElements(list);
-                        recyclerView.setAdapter(adapter);
-                        if (list == null || list.isEmpty()) {
-                            no_routines.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
+                        if (state) {
+                            adapter.setElements(list);
+                            recyclerView.setAdapter(adapter);
+                            if (list == null || list.isEmpty()) {
+                                no_routines.setVisibility(View.VISIBLE);
+                                recyclerView.setVisibility(View.GONE);
+                            } else {
+                                no_routines.setVisibility(View.GONE);
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
                         }
-                        else {
-                            no_routines.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
-                        }
-                        // Aca tendria que mandar una notificacion => Hubo un cambio en las rutinas! Toca aquí para conocer tus rutinas.
                     }
                 }
             }, new Response.ErrorListener() {
@@ -124,7 +119,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         String name = list.get(position).getName();
         Toast.makeText(getContext(), name + " Routine On", Toast.LENGTH_LONG).show();
         makeActions(list.get(position));
-        ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.rgb(217, 221, 226));
+        ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.WHITE);
         colorFade.setDuration(4000);
         colorFade.start();
         new CountDownTimer(4000, 50) {
@@ -140,8 +135,11 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         }.start();
     }
 
-    public void sendNotifications(String title, String text) {
-        notifications.sendNotifications(2, title, text, getContext(), NotificationsChannel.ROUTINE_CHANNEL_ID, "routines");
+    public void sendNotifications(int title_int, int text_int) {
+        if (context == null) context = getContext();
+        String title = context.getResources().getString(title_int);
+        String text = context.getResources().getString(text_int);
+        notifications.sendNotifications(2, title, text, context, NotificationsChannel.ROUTINE_CHANNEL_ID, "routines");
     }
 
     private void makeActions(Routine routine) {
@@ -180,5 +178,12 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         if (response != null)
             text += " " + response.getDescription().get(0);
         Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+    }
+
+    public void initialize(List<Routine> list, Context context) {
+        this.context = context;
+        this.list = list;
+        Log.d("LIST", list.toString());
+        getResponseAfterInterval.run();
     }
 }

@@ -89,4 +89,5 @@
     <string name="changed_from">El modo de la Alarm cambio de</string>
     <string name="changed_to">a</string>
     <string name="disarm_mode_activated">Modo Desactivado con Exito!</string>
+    <string name="routines_notification_text">¡Hubo un cambio en las rutinas! Haz click para ver.</string>
 </resources>
