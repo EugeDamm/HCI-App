@@ -74,7 +74,7 @@ public class RoomListViewModel extends AndroidViewModel {
         String text = "Error";
         if (response != null)
             text += " " + response.getDescription().get(0);
-        Toast.makeText(getApplication().getApplicationContext(), text, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplication().getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 }
 
