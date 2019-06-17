@@ -38,7 +38,7 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
 
     private static final String TAG = "SpecificRoomActivity";
     private List<Device> list;
-    private Context context = this;
+    public Context context = this;
     private LinearLayout linearLayout;
     private TextView emptyText;
     private RecyclerView recyclerView;
@@ -47,7 +47,7 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
     private DevicesViewModel viewModel;
     private Room room;
     private final Handler handler = new Handler();
-
+    private Notifications notifications;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +86,7 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         getResponseAfterInterval.run();
+        notifications = new Notifications();
     }
 
     private Runnable getResponseAfterInterval = new Runnable() {
@@ -96,6 +97,7 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
                 @Override
                 public void onResponse(ArrayList<Device> response) {
                     if(!list.toString().equals(response.toString())) {
+                        sendNotifications("Smart Home System", "There was a change in one room! Click to view.");
                         adapter.setElements(response);
                         list = response;
                         recyclerView.setAdapter(adapter);
@@ -117,6 +119,10 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
         }
     };
 
+    public void sendNotifications(String title, String text) {
+        notifications.sendNotifications(4, title, text, getApplicationContext(), NotificationsChannel.SPECIFIC_ROOM_DEVICES_CHANNEL_ID, room.getName());
+    }
+
     @Override
     public void onItemClick(int position, Context context, View view) {
         Intent intent = new Intent(context, SpecificDeviceActivity.class);
@@ -128,6 +134,10 @@ public class SpecificRoomActivity extends AppCompatActivity implements RecyclerA
         bundleToAdd.putParcelable("go_back", room);
         intent.putExtras(bundleToAdd);
         startActivity(intent);
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     private void handleError(VolleyError error) {

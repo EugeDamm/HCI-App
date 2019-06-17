@@ -70,6 +70,8 @@
     <string name="prompt">Hi Tell Me Something!</string>
     <string name="no_internet_connection">Oops! Looks like there is an error in your connection! Please check it out and try again later.</string>
     <string name="no_connection_image">No Connection Image</string>
+    <string name="room_device_change">There has been a change in </string>
+    <string name="phrase_finish">Click to view.</string>
     <string name="changed_from">The Alarm mode changed from </string>
     <string name="changed_to"> to </string>
     <string name="disarm_mode">Deactivated</string>
