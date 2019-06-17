@@ -106,7 +106,9 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                 public void onResponse(ArrayList<Room> response) {
                     if(list != null) {
                         if (!list.toString().equals(response.toString())) {
-                            sendNotifications("Smart Home System", "There was a change in rooms! Click to view.");
+                            String title = getContext().getResources().getString(R.string.title_notifications);
+                            String text = getContext().getResources().getString(R.string.text_room_notification);
+                            sendNotifications(title, text);
                             adapter.setElements(response);
                             list = response;
                             recyclerView.setAdapter(adapter);
@@ -144,12 +146,12 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
             String idChanged = "";
             if(list != null) {
                 if(first) {
-                    Log.d(TAG, "run: first en true y list = " + list);
+//                    Log.d(TAG, "run: first en true y list = " + list);
                     for (final Room room : list) {
                         Api.getInstance(getContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                             @Override
                             public void onResponse(ArrayList<Device> response) {
-                                Log.d(TAG, "onResponse: metiendo en el inicial a roomid = " + room.getId() + " le meto = " + response);
+//                                Log.d(TAG, "onResponse: metiendo en el inicial a roomid = " + room.getId() + " le meto = " + response);
                                 allRoomsDevices.put(room.getId(), response);
                             }
                         }, new Response.ErrorListener() {
@@ -165,10 +167,12 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                     Api.getInstance(getContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                         @Override
                         public void onResponse(ArrayList<Device> response) {
-                            toCompare.put(room.getId(), response);
-                            if(!toCompare.get(room.getId()).toString().equals(allRoomsDevices.get(room.getId()).toString())) {
-                                sendNotifications(room);
-                                allRoomsDevices = toCompare;
+                            if(room.getId() != null) {
+                                toCompare.put(room.getId(), response);
+                                if (!toCompare.get(room.getId()).toString().equals(allRoomsDevices.get(room.getId()).toString())) {
+                                    sendNotifications(room);
+                                    allRoomsDevices = toCompare;
+                                }
                             }
                         }
                     }, new Response.ErrorListener() {
