@@ -75,4 +75,6 @@
     <string name="change_interval">Cambiar Tiempo Intervalo</string>
     <string name="no_api_connection">¡Ups! Hay un error al conectarse con el servidor. Asegurate que el servidor este corriendo, y con la direccion correcta.</string>
     <string name="text_room_notification">¡Hubo un cambio en los cuartos! Haz click para ver.</string>
+    <string name="unable_routine_first">"No se ha podido realizar la accion "</string>
+    <string name="unable_routine_last">.</string>
 </resources>

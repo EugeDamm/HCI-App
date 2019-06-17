@@ -55,8 +55,13 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
     private Notifications notifications;
     private Map<String, ArrayList<Device>> allRoomsDevices = new HashMap<>();
     private boolean first = true;
+    private Context context;
 
     public Rooms() {
+    }
+
+    public void setContext(Context context) {
+
     }
 
     @Override
@@ -69,6 +74,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new RecyclerAdapter<>(this, "room");
         viewModel = ViewModelProviders.of(this).get(RoomListViewModel.class);
+        context = getContext();
         final Observer<ArrayList<Room>> roomsObserver = new Observer<ArrayList<Room>>() {
             @Override
             public void onChanged(final ArrayList<Room> rooms) {
@@ -94,40 +100,42 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
     }
 
     private void sendNotifications(String title, String text) {
-        notifications.sendNotifications(1, title, text, getContext(), NotificationsChannel.ROOMS_CHANNEL_ID, "rooms");
+        if (context == null) context = getContext();
+        notifications.sendNotifications(1, title, text, context, NotificationsChannel.ROOMS_CHANNEL_ID, "rooms");
     }
 
     private Runnable getResponseAfterInterval = new Runnable() {
         @Override
         public void run() {
         handler.postDelayed(this, 30 * 1000);
-            Api.getInstance(getContext()).getRooms(new Response.Listener<ArrayList<Room>>() {
-                @Override
-                public void onResponse(ArrayList<Room> response) {
-                    if(list != null) {
-                        if (!list.toString().equals(response.toString())) {
-                            String title = getContext().getResources().getString(R.string.title_notifications);
-                            String text = getContext().getResources().getString(R.string.text_room_notification);
-                            sendNotifications(title, text);
-                            adapter.setElements(response);
-                            list = response;
-                            recyclerView.setAdapter(adapter);
-                            if (list == null || list.isEmpty()) {
-                                emptyText.setVisibility(View.VISIBLE);
-                                recyclerView.setVisibility(View.GONE);
-                            } else {
-                                emptyText.setVisibility(View.GONE);
-                                recyclerView.setVisibility(View.VISIBLE);
-                            }
+        if (context == null) context = getContext();
+        Api.getInstance(context).getRooms(new Response.Listener<ArrayList<Room>>() {
+            @Override
+            public void onResponse(ArrayList<Room> response) {
+                if(list != null) {
+                    if (!list.toString().equals(response.toString())) {
+                        String title = context.getResources().getString(R.string.title_notifications);
+                        String text = context.getResources().getString(R.string.text_room_notification);
+                        sendNotifications(title, text);
+                        adapter.setElements(response);
+                        list = response;
+                        recyclerView.setAdapter(adapter);
+                        if (list == null || list.isEmpty()) {
+                            emptyText.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        } else {
+                            emptyText.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
                         }
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    ErrorHandler.handleError(error, getActivity());
-                }
-            });
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                ErrorHandler.handleError(error, getActivity());
+            }
+        });
         }
     };
 
@@ -141,6 +149,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
     private Runnable backgroundRoomDeviceChecker = new Runnable() {
         @Override
         public void run() {
+            if (context == null) context = getContext();
             handler.postDelayed(this, 5 * 1000);
             final Map<String,ArrayList<Device>> toCompare = new HashMap<>();
             String idChanged = "";
@@ -148,7 +157,7 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                 if(first) {
 //                    Log.d(TAG, "run: first en true y list = " + list);
                     for (final Room room : list) {
-                        Api.getInstance(getContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
+                        Api.getInstance(context).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                             @Override
                             public void onResponse(ArrayList<Device> response) {
 //                                Log.d(TAG, "onResponse: metiendo en el inicial a roomid = " + room.getId() + " le meto = " + response);
@@ -164,10 +173,10 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                     first = false;
                 }
                 for (final Room room : list) {
-                    Api.getInstance(getContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
+                    Api.getInstance(context).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                         @Override
                         public void onResponse(ArrayList<Device> response) {
-                            if(room.getId() != null) {
+                            if(room.getId() != null && allRoomsDevices.get(room.getId()) != null) {
                                 toCompare.put(room.getId(), response);
                                 if (!toCompare.get(room.getId()).toString().equals(allRoomsDevices.get(room.getId()).toString())) {
                                     sendNotifications(room);
@@ -189,8 +198,8 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
 
     private void sendNotifications(Room room) {
         String title = "Smart Home System";
-        String text = getString(R.string.room_device_change) + room.getName() + "! " + getString(R.string.phrase_finish);
-        notifications.sendNotifications(4, title, text, getContext(), NotificationsChannel.ROOMS_CHANNEL_ID, "rooms");
+        String text = context.getResources().getString(R.string.room_device_change) + room.getName() + "! " + context.getResources().getString(R.string.phrase_finish);
+        notifications.sendNotifications(4, title, text, context, NotificationsChannel.ROOMS_CHANNEL_ID, "rooms");
     }
 
 }

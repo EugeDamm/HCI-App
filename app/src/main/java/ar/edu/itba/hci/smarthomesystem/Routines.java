@@ -117,7 +117,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
     @Override
     public void onItemClick(final int position, Context context, final View view) {
         String name = list.get(position).getName();
-        Toast.makeText(getContext(), name + " Routine On", Toast.LENGTH_LONG).show();
+//        Toast.makeText(getContext(), name + " Routine On", Toast.LENGTH_LONG).show();
         makeActions(list.get(position));
         ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.rgb(250, 250, 250));
         colorFade.setDuration(4000);
@@ -148,7 +148,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
             String name = action.getString("actionName");
             String deviceId = action.getString("deviceId");
             String params = action.getString("params");
-            Api.getInstance(this.getContext()).makeActions(deviceId, name, params);
+            Api.getInstance(this.getContext()).makeActions(deviceId, name, params, context);
         }
         catch (JSONException e) {
             Log.e("JSONError", e.toString());
