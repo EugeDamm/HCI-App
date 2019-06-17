@@ -3,7 +3,6 @@ package api;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,9 +20,6 @@ import ar.edu.itba.hci.smarthomesystem.Device;
 import ar.edu.itba.hci.smarthomesystem.Room;
 import ar.edu.itba.hci.smarthomesystem.Routine;
 import ar.edu.itba.hci.smarthomesystem.State;
-import devices.DeviceType;
-import devices.Alarm;
-import devices.DeviceType;
 
 public class Api {
     private static Api instance;
@@ -33,7 +29,7 @@ public class Api {
     // IP Itba-Invitados Cravi 10.7.21.60
     // Use IP 192.168.0.16 when running Android on a real phone and Euge's PC
     // Use IP 192.168.0.12 when running Android on a real phone and Euge's Macbook
-    private static String URL = "http://192.168.0.12:8080/api/";
+    private static String URL = "http://10.0.2.2:8080/api/";
     private final String TAG = "Api";
 
     private Api(Context context) {

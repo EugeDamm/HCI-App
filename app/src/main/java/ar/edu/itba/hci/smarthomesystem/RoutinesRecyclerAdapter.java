@@ -21,7 +21,6 @@ public class RoutinesRecyclerAdapter<T> extends RecyclerAdapter<T> {
 
     public RoutinesRecyclerAdapter(OnItemListener onItemListener, String type) {
         super(onItemListener, type);
-//        this.elements = elements;
         this.onItemListener = onItemListener;
     }
 

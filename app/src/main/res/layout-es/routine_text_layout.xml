@@ -8,5 +8,4 @@
     android:layout_margin="12dp"
     android:padding="12dp"
     android:background="@drawable/rounded_corner">
-
-    </TextView>
+</TextView>
