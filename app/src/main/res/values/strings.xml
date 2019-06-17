@@ -13,7 +13,7 @@
     <string name="notification_title" translatable="false">Smart Home System</string>
     <string name="routines_notification_text">There was a change in routines! Click to view.</string>
     <string name="unable_routine_first">Unable to make </string>
-    <string name="unable_routine_last"> action.</string>
+    <string name="unable_routine_last">action.</string>
 
     <!-- Alarm Modes -->
     <string name="home_mode">I\'m Home Mode</string>

@@ -731,7 +731,7 @@ public class Api {
     private void makeActionError(String actionName, Context context) {
         String first = context.getResources().getString(R.string.unable_routine_first);
         String last = context.getResources().getString(R.string.unable_routine_last);
-        String toShow = first + actionName + last;
+        String toShow = first + " " + actionName + " " + last;
         Toast.makeText(context, toShow, Toast.LENGTH_SHORT).show();
     }
 }
