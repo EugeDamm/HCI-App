@@ -42,7 +42,7 @@ public class ErrorHandler extends Exception {
                 String text = activity.getResources().getString(R.string.error_message);
                 if (response != null)
                     text += " " + response.getDescription().get(0);
-                Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
+//                Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
             }
         }
     }

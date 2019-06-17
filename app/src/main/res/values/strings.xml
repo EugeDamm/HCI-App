@@ -4,8 +4,10 @@
     <string name="title_notifications">Alarm</string>
     <string name="app_name">Smart Home System</string>
 
+    <string name="no_api_connection">Ops! There is an error connecting to the Server. Please make sure the server is running, and in the correct address.</string>
+
     <!-- Routine Mode -->
-    <string name="no_routines">No available Routines.</string>
+    <string name="no_routines">No Routines Have Been Added.</string>
     <string name="routines_notification_title" translatable="false">Smart Home System</string>
     <string name="routines_notification_text">There was a change in routines! Click to view.</string>
 

@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +41,19 @@ public class Api {
     public static void setURL(String input) {
         if(input != null && !input.equals(""))
             URL = "http://" + input + ":8080/api/";
+    }
+
+    public boolean isConnected() {
+        try{
+            java.net.URL myUrl = new URL(URL);
+            URLConnection connection = myUrl.openConnection();
+            connection.setConnectTimeout(5000);
+            connection.connect();
+            return true;
+        } catch (Exception e) {
+            // Handle your exceptions
+            return false;
+        }
     }
 
     public static synchronized Api getInstance(Context context) {
