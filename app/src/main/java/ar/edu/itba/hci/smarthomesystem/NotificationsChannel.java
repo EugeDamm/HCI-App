@@ -29,9 +29,6 @@ public class NotificationsChannel extends Application {
             String alarm_channel_name = "Alarm Channel";
             String alarm_channel_description = "A channel for all Alarm Notifications";
 
-            String room_devices_channel_name = "Room Devices Channel";
-            String room_devices_channel_description = "A channel for all Room Devices Notifications";
-
             int importance = NotificationManager.IMPORTANCE_HIGH;
 
             android.app.NotificationChannel rooms_channel = new android.app.NotificationChannel(ROOMS_CHANNEL_ID, rooms_channel_name, importance);
@@ -43,8 +40,6 @@ public class NotificationsChannel extends Application {
             android.app.NotificationChannel alarm_channel = new android.app.NotificationChannel(ALARM_CHANNEL_ID, alarm_channel_name, importance);
             alarm_channel.setDescription(alarm_channel_description);
 
-            android.app.NotificationChannel room_device_channel = new android.app.NotificationChannel(SPECIFIC_ROOM_DEVICES_CHANNEL_ID, room_devices_channel_name, importance);
-            room_device_channel.setDescription(room_devices_channel_description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
 
@@ -52,7 +47,6 @@ public class NotificationsChannel extends Application {
             notificationManager.createNotificationChannel(rooms_channel);
             notificationManager.createNotificationChannel(routines_channel);
             notificationManager.createNotificationChannel(alarm_channel);
-            notificationManager.createNotificationChannel(room_device_channel);
         }
     }
 }

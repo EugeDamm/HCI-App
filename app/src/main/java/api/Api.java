@@ -2,6 +2,7 @@ package api;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import ar.edu.itba.hci.smarthomesystem.Device;
+import ar.edu.itba.hci.smarthomesystem.R;
 import ar.edu.itba.hci.smarthomesystem.Room;
 import ar.edu.itba.hci.smarthomesystem.Routine;
 import ar.edu.itba.hci.smarthomesystem.State;
@@ -433,7 +435,7 @@ public class Api {
         return uuid;
     }
 
-    public void makeActions(String deviceId, String actionName, String params) {
+    public void makeActions(String deviceId, final String actionName, String params, final Context context) {
         switch (actionName) {
             case "turnOn":
                 toggleDevice(new Response.Listener<Boolean>() {
@@ -445,7 +447,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "off");
                 break;
@@ -460,7 +462,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "on");
                 break;
@@ -475,7 +477,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "closed");
                 break;
@@ -490,7 +492,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "opened");
                 break;
@@ -504,7 +506,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, Integer.getInteger(params));
                 break;
@@ -518,7 +520,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -532,7 +534,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, Integer.getInteger(params));
                 break;
@@ -546,7 +548,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -560,7 +562,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -574,7 +576,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -588,7 +590,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -602,7 +604,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -616,7 +618,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -630,7 +632,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, params);
                 break;
@@ -641,11 +643,10 @@ public class Api {
                     public void onResponse(Boolean response) {
 
                     }
-
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "unlocked");
                 break;
@@ -660,7 +661,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "locked");
                 break;
@@ -687,7 +688,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "inactive");
                 break;
@@ -702,7 +703,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, "active");
                 break;
@@ -716,7 +717,7 @@ public class Api {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        makeActionError(actionName, context);
                     }
                 }, deviceId, Integer.getInteger(params));
                 break;
@@ -725,5 +726,12 @@ public class Api {
                     break;
 
         }
+    }
+
+    private void makeActionError(String actionName, Context context) {
+        String first = context.getResources().getString(R.string.unable_routine_first);
+        String last = context.getResources().getString(R.string.unable_routine_last);
+        String toShow = first + actionName + last;
+        Toast.makeText(context, toShow, Toast.LENGTH_SHORT).show();
     }
 }
