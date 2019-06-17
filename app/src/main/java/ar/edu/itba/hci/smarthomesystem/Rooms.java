@@ -164,7 +164,6 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
                     Api.getInstance(getContext()).getDevicesForRoom(new Response.Listener<ArrayList<Device>>() {
                         @Override
                         public void onResponse(ArrayList<Device> response) {
-                            Log.d(TAG, "onResponse: metiendo en el comparador a roomid = " + room.getId() + " le meto = " + response);
                             toCompare.put(room.getId(), response);
                             if(!toCompare.get(room.getId()).toString().equals(allRoomsDevices.get(room.getId()).toString())) {
                                 sendNotifications(room);
@@ -185,9 +184,8 @@ public class Rooms extends Fragment implements RecyclerAdapter.OnItemListener {
 
     private void sendNotifications(Room room) {
         String title = "Smart Home System";
-        String roomName = room.getName();
         String text = getString(R.string.room_device_change) + room.getName() + "! " + getString(R.string.phrase_finish);
-        notifications.sendNotifications(4, title, text, getContext(), NotificationsChannel.SPECIFIC_ROOM_DEVICES_CHANNEL_ID, room.getId());
+        notifications.sendNotifications(4, title, text, getContext(), NotificationsChannel.ROOMS_CHANNEL_ID, "rooms");
     }
 
 }

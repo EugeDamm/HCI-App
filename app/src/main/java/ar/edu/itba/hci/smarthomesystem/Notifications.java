@@ -19,20 +19,9 @@ public class Notifications {
 
     public void sendNotifications(int id, String title, String text, Context context, String channel, String destination) {
         PendingIntent contentIntent;
-        switch (id) {
-            case 4: {
-                Intent activityIntent = new Intent(context, SpecificRoomActivity.class);
-                activityIntent.putExtra("room_name", destination);
-                contentIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
-                break;
-            }
-            default: {
-                Intent activityIntent = new Intent(context, MainActivity.class);
-                activityIntent.putExtra("fragment", destination);
-                contentIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
-                break;
-            }
-        }
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        activityIntent.putExtra("fragment", destination);
+        contentIntent = PendingIntent.getActivity(context, 0, activityIntent, PendingIntent.FLAG_ONE_SHOT);
 
         Intent dismissIntent = new Intent(context, NotificationReciever.class);
         dismissIntent.putExtra("toDismiss", id);
