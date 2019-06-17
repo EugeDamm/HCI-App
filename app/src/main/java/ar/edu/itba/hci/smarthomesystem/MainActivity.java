@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             switch (intentFragment) {
                 case "routines": {
                     loadRoutines(true, navView);
-                    Log.d("CASE", "entro aca en rutinas");
-//                    navView.setSelectedItemId(R.id.routines);
                     return;
                 }
                 case "rooms": {
@@ -147,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if (!connectionApi()) {
+        if (!connectionApi() && isNetworkAvailable()) {
             fragment = new NoApiConnection();
             loadFragment(fragment);
             return true;
