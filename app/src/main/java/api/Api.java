@@ -396,6 +396,19 @@ public class Api {
         return uuid;
     }
 
+    public String setInterval(Response.Listener<Boolean> listener, Response.ErrorListener errorListener, String interval, String deviceId) {
+        String url = URL + "devices/" + deviceId + "/setInterval";
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("content-type", "application/json");
+        String[] data = {interval};
+        GsonRequest<String[], Boolean> request =
+                new GsonRequest<String[], Boolean>(Request.Method.PUT, url, data, "result", new TypeToken<Boolean>(){}, headers, listener, errorListener);
+        String uuid = UUID.randomUUID().toString();
+        request.setTag(uuid);
+        requestQueue.add(request);
+        return uuid;
+    }
+
     public String setColor(Response.Listener<String> listener, Response.ErrorListener errorListener, String deviceId, String color) {
         String url = URL + "devices/" + deviceId + "/setColor";
         Map<String, String> headers = new HashMap<String, String>();

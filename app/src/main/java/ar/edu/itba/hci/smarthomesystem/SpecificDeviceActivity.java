@@ -1,5 +1,6 @@
 package ar.edu.itba.hci.smarthomesystem;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -59,6 +61,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
     private final Context context = this;
     private String action;
     private Parser parser;
+    private Activity activity = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -388,7 +391,7 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         colorGradle.show();
     }
 
-    private void createTimerLayout(DeviceType device, String deviceId) {
+    private void createTimerLayout(DeviceType device, final String deviceId) {
         final String deviceIdInner = deviceId;
         setContentView(R.layout.timer_layout);
         final String status = device.getStatus();
@@ -399,10 +402,11 @@ public class SpecificDeviceActivity extends AppCompatActivity {
         String intervalString = intervalTime + " secs.";
         String remainingString = remainingTime + " secs.";
         final TextView statusText = findViewById(R.id.statusText);
-        TextView intervalText = findViewById(R.id.intervalText);
-        TextView remainingText = findViewById(R.id.remainingTimeText);
+        final TextView intervalText = findViewById(R.id.intervalText);
+        final TextView remainingText = findViewById(R.id.remainingTimeText);
         ProgressBar progressBar = findViewById(R.id.remainingProgressBar);
         final Switch timerSwitch = findViewById(R.id.timerSwitch);
+        ImageButton intervalButton = findViewById(R.id.intervalButton);
         statusText.setText(status);
         intervalText.setText(intervalString);
         remainingText.setText(remainingString);
@@ -443,6 +447,41 @@ public class SpecificDeviceActivity extends AppCompatActivity {
                 intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.prompt));
                 if (intent.resolveActivity(getPackageManager()) != null)
                     startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            }
+        });
+        intervalButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.change_interval);
+                final EditText input = new EditText(context);
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Api.getInstance(context).setInterval(new Response.Listener<Boolean>() {
+                            @Override
+                            public void onResponse(Boolean response) {
+                                String newIntervalString = input.getText() + " secs.";
+                                String newRemainingString = input.getText() + " secs.";
+                                intervalText.setText(newIntervalString);
+                                remainingText.setText(newRemainingString);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                ErrorHandler.handleError(error, activity);
+                            }
+                        }, input.toString(), deviceId);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.show();
             }
         });
     }

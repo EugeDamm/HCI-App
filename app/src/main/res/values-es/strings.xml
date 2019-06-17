@@ -12,24 +12,6 @@
     <!-- Routines Mode -->
     <string name="no_routines">¡No Se Han Añadido Rutinas!</string>
 
-    <!-- Tester for list items -->
-    <string-array name="fake_rooms">
-        <item>Room 1</item>
-        <item>Room 2</item>
-        <item>Room 3</item>
-        <item>Room 4</item>
-        <item>Room 5</item>
-        <item>Room 6</item>
-        <item>Room 7</item>
-        <item>Room 8</item>
-        <item>Room 9</item>
-        <item>Room 10</item>
-        <item>Room 11</item>
-        <item>Room 12</item>
-        <item>Room 13</item>
-        <item>Room 14</item>
-    </string-array>
-
     <string name="fake_room">Cuarto Falso</string>
     <string name="empty_field">El campo no puede estar vacio</string>
     <string name="no_devices_added">No Hay Dispositivos Disponibles</string>
@@ -81,7 +63,7 @@
     <string name="change_ip">Cambiar Dirección IP</string>
     <string name="wrong_code">Codigo Incorrecto!</string>
     <string name="deactivated_mode">Desactivar Modo</string>
-    <string name="prompt">Hola Dime Algo!</string>
+    <string name="prompt">Hola dime la acción!</string>
     <string name="no_internet_connection">Ups! Parece que hay un error en tu conexión. Por favor, intente arreglarlo y vuelva a intentar luego.</string>
     <string name="no_connection_image">Imágen Sin Conexión</string>
     <string name="room_device_change">"Se produjo un cambio en "</string>
@@ -90,5 +72,6 @@
     <string name="changed_to">a</string>
     <string name="disarm_mode_activated">Modo Desactivado con Exito!</string>
     <string name="routines_notification_text">¡Hubo un cambio en las rutinas! Haz click para ver.</string>
+    <string name="change_interval">Cambiar Tiempo Intervalo</string>
     <string name="no_api_connection">¡Ups! Hay un error al conectarse con el servidor. Asegurate que el servidor este corriendo, y con la direccion correcta.</string>
 </resources>
