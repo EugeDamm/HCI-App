@@ -89,7 +89,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
                 @Override
                 public void onResponse(ArrayList<Routine> response) {
                     if (!list.toString().equals(response.toString())) {
-                        sendNotifications(R.string.routines_notification_title, R.string.routines_notification_text);
+                        sendNotifications(R.string.notification_title, R.string.routines_notification_text);
                         list = response;
                         if (state) {
                             adapter.setElements(list);
@@ -119,7 +119,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         String name = list.get(position).getName();
         Toast.makeText(getContext(), name + " Routine On", Toast.LENGTH_LONG).show();
         makeActions(list.get(position));
-        ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.WHITE);
+        ObjectAnimator colorFade = ObjectAnimator.ofObject(view, "backgroundColor", new ArgbEvaluator(), Color.rgb(23,239,31), Color.rgb(250, 250, 250));
         colorFade.setDuration(4000);
         colorFade.start();
         new CountDownTimer(4000, 50) {
