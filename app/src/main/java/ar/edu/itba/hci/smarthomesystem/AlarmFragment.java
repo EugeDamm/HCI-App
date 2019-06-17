@@ -217,7 +217,7 @@ public class AlarmFragment extends Fragment{
         popUp.show();
     }
 
-    private void configSwitch(Switch switchButton, final String mode, boolean checked) {
+    private void configSwitch(final Switch switchButton, final String mode, final boolean checked) {
         switchButton.setOnCheckedChangeListener(null);
         switchButton.setChecked(checked);
         switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -229,7 +229,7 @@ public class AlarmFragment extends Fragment{
                 }else {
                     modes= "disarm";
                 }
-                pickUpDialog(outHomeModeSwitch, modes, isChecked);
+                pickUpDialog(switchButton, modes, isChecked);
             }
         });
     }

@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         public void onResponse(ArrayList<Device> response) {
                             for (Device d : response) {
                                 if (d.getTypeId().equals(ALARM_TYPE_ID)) {
+                                    navView.setSelectedItemId(R.id.alarm);
                                     AlarmFragment alarmFragment = new AlarmFragment();
                                     Bundle bundle = new Bundle();
                                     Alarm alarm = new Alarm("", d.getName(), d.getId());
