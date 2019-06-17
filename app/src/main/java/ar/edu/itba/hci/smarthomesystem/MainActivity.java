@@ -21,6 +21,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
@@ -41,6 +43,7 @@ import api.Api;
 import devices.Alarm;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+
     private final String LOG_TAG = "ar.edu.itba.apiexample";
     private static final String TAG = "MainActivity";
     private MutableLiveData<ArrayList<Room>> rooms;
@@ -59,9 +62,37 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         this.starterIntent = getIntent();
         context = getApplicationContext();
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        final BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(this);
-        Log.d(TAG, "onCreate: estoy en el onCreate");
+        if (getIntent().getExtras() != null) {
+            String intentFragment = getIntent().getStringExtra("fragment");
+            switch (intentFragment) {
+                case "routines": {
+                    Api.getInstance(this).getRoutines(new Response.Listener<ArrayList<Routine>>() {
+                        @Override
+                        public void onResponse(ArrayList<Routine> response) {
+                            bundle.putParcelableArrayList("routines", response);
+                            fragment = new Routines();
+                            fragment.setArguments(bundle);
+                            loadFragment(fragment);
+                            navView.setSelectedItemId(R.id.routines);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            ErrorHandler.handleError(error, MainActivity.this);
+                        }
+                    });
+                    return;
+                }
+                case "rooms": {
+                    fragment = new Rooms();
+                    loadFragment(fragment);
+                    navView.setSelectedItemId(R.id.rooms);
+                    return;
+                }
+            }
+        }
         if (savedInstanceState == null) {
             if (isNetworkAvailable())
                 fragment = new Rooms();
@@ -75,20 +106,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = new NoConnectionFragment();
             loadFragment(fragment);
         }
-        checkConnectionRepeatedly.run();
     }
-
-    private Runnable checkConnectionRepeatedly = new Runnable() {
-        @Override
-        public void run() {
-            handler.postDelayed(this, 10 * 1000);
-            if(!isNetworkAvailable()) {
-                recreate();
-            } else {
-                recreate();
-            }
-        }
-    };
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager

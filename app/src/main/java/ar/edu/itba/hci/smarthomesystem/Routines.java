@@ -3,16 +3,17 @@ package ar.edu.itba.hci.smarthomesystem;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,7 +32,6 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ import api.Error;
  */
 public class Routines extends Fragment implements RecyclerAdapter.OnItemListener {
 
+    private Notifications notifications;
 
     private final String TAG = "Routines";
     RecyclerView recyclerView;
@@ -82,6 +83,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
         recyclerView.setHasFixedSize(true); // improves performance
         recyclerView.setAdapter(adapter);
         getResponseAfterInterval.run();
+        notifications = new Notifications();
         return view;
     }
 
@@ -92,6 +94,7 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
                 @Override
                 public void onResponse(ArrayList<Routine> response) {
                     if (!list.toString().equals(response.toString())) {
+                        sendNotifications("Smart Home System", "There was a change in routines! Click to view.");
                         list = response;
                         adapter.setElements(list);
                         recyclerView.setAdapter(adapter);
@@ -135,6 +138,10 @@ public class Routines extends Fragment implements RecyclerAdapter.OnItemListener
                 // view.setBackgroundResource(R.drawable.rounded_corner);
             }
         }.start();
+    }
+
+    public void sendNotifications(String title, String text) {
+        notifications.sendNotifications(2, title, text, getContext(), NotificationsChannel.ROUTINE_CHANNEL_ID, "routines");
     }
 
     private void makeActions(Routine routine) {

@@ -84,4 +84,6 @@
     <string name="prompt">Hola Dime Algo!</string>
     <string name="no_internet_connection">Ups! Parece que hay un error en tu conexión. Por favor, intente arreglarlo y vuelva a intentar luego.</string>
     <string name="no_connection_image">Imágen Sin Conexión</string>
+    <string name="room_device_change">"Se produjo un cambio en "</string>
+    <string name="phrase_finish">Click para ver.</string>
 </resources>
