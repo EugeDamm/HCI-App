@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="540dp"
-    android:orientation="vertical"
-    android:layout_marginBottom="56dp"
-    tools:context=".Rooms"
-    android:id="@+id/rooms">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <view class="android.support.v7.widget.RecyclerView"
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/recycler_view_rooms"
-        android:scrollbars="vertical"/>
+        android:layout_height="540dp"
+        android:orientation="vertical"
+        android:layout_marginBottom="56dp"
+        tools:context=".Rooms"
+        android:id="@+id/rooms"
+        >
 
-    <TextView
-        android:id="@+id/empty_room_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/no_rooms"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="45sp"
-        />
+        <view
+            android:id="@+id/recycler_view_rooms"
+            class="android.support.v7.widget.RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/empty_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_rooms"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="45sp"
+            />
+
+    </FrameLayout>
+
+</ScrollView>
