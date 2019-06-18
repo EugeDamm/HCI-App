@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 }
                 case "alarm":
                     loadAlarm(true, navView);
+                    navView.setSelectedItemId(R.id.alarm);
                     return;
             }
         }
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                             break;
                         case "alarm":
                             loadAlarm(true, navView);
+                            navView.setSelectedItemId(R.id.alarm);
                             break;
                     }
                 } else
@@ -164,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 case R.id.alarm:
                     getIntent().putExtra("fragment", "alarm");
                     loadAlarm(true, null);
+                    navView.setSelectedItemId(R.id.alarm);
                     break;
             }
         } else {
